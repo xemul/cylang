@@ -54,8 +54,8 @@ For simplicity in describing and using objects the key may not be a string
 token (startin with " or '), but be a symbol (without dots). In any case
 the key token is treated as just a string. IOW two next tokens mean the same
 
-        [ "a" 1 ]
-	[ a 1 ]
+    [ "a" 1 ]
+    [ a 1 ]
 
 Mind the space before the final ], as the latter must be a separate token.
 
@@ -91,37 +91,20 @@ part of the name.
 A dot (.) inside symbol is used to split a symbol name into pieces each
 of which is considered to be a key in the previously referenced object,
 which in turn is expected to be a map or a list. For example the symbol
-
-        a.b
-
-means find the object named "a", then find an object named "b" in it
+`a.b` means find the object named "a", then find an object named "b" in it
 (provided a referred to a map).
 
 Note, that the value "b" is considered to be the key. If you want to
 treat "b" as another symbol that cotains the key value you can use two
-dots as separator. For example
+dots as separator. For example `a..b` means -- find the object "a", then 
+find the symbol "b", get what it refers to (it should be a string), then 
+find in "a" the value by the obtained string key.
 
-        a..b
+Dot can follow a cursor, for example the symbol `_.a` means take the cursor
+object, treat it as a map and find object "a" in it.
 
-means -- find the object "a", then find the symbol "b", get what it
-refers to (it should be a string), then find in "a" the value by the
-obtained string key.
-
-Dot can follow a cursor, for example the symbol
-
-        _.a
-
-means take the cursor object, treat it as a map and find object "a"
-in it.
-
-For lists the "key" is expected to be a number, for example
-
-        a.0
-
-means find list named "a" and get the 0th element from it. Respectively
-
-        a..b
-
+For lists the "key" is expected to be a number, for example `a.0` means 
+find list named "a" and get the 0th element from it. Respectively `a..b`
 means find list "a", then get what b refers to (should be a number) then
 get the b-th element.
 
@@ -134,21 +117,22 @@ Here's how.
 
 * Arythmetics.
 
-Tokens: + - / * and % . Evaluate two more tokens.
+Tokens: `+ - / * %`. Evaluate two more tokens.
 
 If the next tokens are numbers they are added, substracted, etc. Otherwise
 some magic comes up.
 
-+ on two strings concatenates those and results in a new string
-+ on two lists splices them and results in a new list
+ \+ on two strings concatenates those and results in a new string
+ 
+ \+ on two lists splices them and results in a new list
 
-- on a list and a number removes the n-th element from the list
-- on a map and a string removes the respective key from the map
-
+ \- on a list and a number removes the n-th element from the list
+ 
+ \- on a map and a string removes the respective key from the map
 
 * Boolean opts
 
-Tokens: & | ^ ~ . All but ~ need two more boolean tokens, ~ needs one.
+Tokens: `& | ^ ~`. All but ~ need two more boolean tokens, ~ needs one.
 Do what they are expected to, but note, that for & and | both tokens ARE
 evaluated before doing the operation, it's not like && and || in C.
 
