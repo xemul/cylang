@@ -32,8 +32,8 @@ and it terninates at the next # (not at the end of line).
 
 To sum up -- a token can be an integer, a string, a symbol, define
 list, map or a command block or to be a command (or a comment, but
-these are ignored). Also some tokens may evaluate a boolean value.
-Here's how they are evaluated.
+these are ignored). Also some tokens may evaluate a boolean value or
+a special NOVALUE thing. Here's how they are evaluated.
 
 ### Numbers and strings
 
@@ -115,7 +115,7 @@ To declare a new symbol there's a ! command, find its description below.
 As was said above, commands may need more subsequent tokens to be evaluated.
 Here's how.
 
-* Arythmetics.
+* Arythmetics
 
 Tokens: `+ - / * %`. Evaluate two more tokens.
 
@@ -130,10 +130,40 @@ some magic comes up.
  
  \- on a map and a string removes the respective key from the map
 
-* Boolean opts
+* Boolean
 
 Tokens: `& | ^ ~`. All but ~ need two more boolean tokens, ~ needs one.
 Do what they are expected to, but note, that for & and | both tokens ARE
 evaluated before doing the operation, it's not like && and || in C.
+
+* Lists
+
+Tokens: `( ) (: (| (- (< (> (<> +( +) -( -)`. Tokens ( and ) mark the list
+start and end respectively. Other tokens typically need at least one more 
+list token.
+
+`(:` generates a new list. It needs 3 more number tokens and makes a new 
+list with numbers starting from the 1st number ending below the 3rd one 
+with the 2nd number being an incremental step (works only for positive 
+values).
+
+`(|` maps a list. It takes one list token and one other token, then for each
+element from the 1st one calls the 2nd token (to refer to the list element 
+to convert use a cursor) then puts into the resulting list.
+
+`(-` filters a list. Works similarly to map, but the 2nd token should result
+in a boolean true or false value meaning that the respective element (a cursor)
+should be included into the new list or not.
+
+`(>`, `(<` and `(<>` cut the list (and produce a new one). Take one list token
+and one (or two for the `<>` one) number(s). New list is cut from head, tail 
+or both respectively up to, but not including, the numbered position(s).
+
+`+(` and `+)` are push to head and push to tail respectively. Take list token 
+and any other one and add the latter to the former.
+
+Similarly `-(` and `-)` are pops from head or tail. Take one list token and 
+modify it. Evaluated into whatever is poped from the list or a special NOVALUE 
+if the list is empty.
 
 ... TO BE CONTINUED
