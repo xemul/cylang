@@ -115,6 +115,26 @@ To declare a new symbol there's a ! command, find its description below.
 As was said above, commands may need more subsequent tokens to be evaluated.
 Here's how.
 
+* Declaring a symbol
+
+Token `!` makes a new symbol. It takes a symbol token, and dereferences it all
+excluding the traling component. Then it takes another token, checks that the
+evaluated symbol part referes to a map and creates a new element in the map.
+
+All the symbols live in a root map, so if the symbol name doesn't have any dots
+in it the new entry is created in this root map thus resulting in somehwat that
+looks like a global variable. For example
+
+    ! x 1
+    
+makes a variable named x being a number 1.
+
+    ! x [ ]
+    ! x.a "string"
+    
+makes a new empty map named "x", then makes an entry with the key "a" in it being
+a string with the value "string".
+
 * Arythmetics
 
 Tokens: `+ - / * %`. Evaluate two more tokens.
