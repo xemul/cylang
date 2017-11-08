@@ -187,4 +187,24 @@ evaluated value is a list with strings.
 `%^` and `%$` take two strings and evaluate a boolean value meaning whether the
 1st string respectively starts of ends with the second one.
 
+* Checks, if-s and loops
+
+Tokens `= != > >= < <=` take two numbers or two strings and compare them as 
+expected. All evaluate into a boolean value.
+
+The `?` takes three tokens -- a boolean one and two command blocks. If the bool
+is true the control is passed to the first block, otherwise to the second. This
+token may get evaluated into some value, see the `<-` command further.
+
+The `??` token is the multiple choice token. It takes one command block token
+and considers it to consist of bool:block pairs. The first boolean true token 
+which passes control to the respective block token, then the whole ?? evaluation
+stops. This token may as well get evaluated into some value with the `<-` command.
+
+Loops are `~(` and `~?`. The former one take a list and a command block then
+passes control to the block for each element from the list. To access the element
+into the block use the cursor. The latter one takes boolean token and a command
+block one. The block is executed while the boolean stays true. The `<-` command
+may also cause the loop tokens to be evaluated.
+
 ... TO BE CONTINUED
