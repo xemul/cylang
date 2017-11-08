@@ -166,4 +166,25 @@ Similarly `-(` and `-)` are pops from head or tail. Take one list token and
 modify it. Evaluated into whatever is poped from the list or a special NOVALUE 
 if the list is empty.
 
+* Operations with strings
+
+`%%` taken a string token and generates a new formatted one. Formatting means
+scanning the string and getting `\(...)` pieces from it. Each `...` piece is
+then considered to be a symbol which gets evaluated and instead of the whole
+`\(...)` block the string representation of it is inserted. E.g.
+
+    %% "Hello, \(name)!"
+    
+will evaluate the "name" symbol and, if it's a string "world", will result in
+a new string "Hello, world!"
+
+`%~` is the atio (or strtol) command. It takes a string and coverts it into
+a number value.
+
+`%/` takes the string and splits it using spaces and tabs as separator. The
+evaluated value is a list with strings.
+
+`%^` and `%$` take two strings and evaluate a boolean value meaning whether the
+1st string respectively starts of ends with the second one.
+
 ... TO BE CONTINUED
