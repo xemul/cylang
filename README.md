@@ -227,4 +227,10 @@ into the block use the cursor. The latter one takes boolean token and a command
 block one. The block is executed while the boolean stays true. The `<-` command
 may also cause the loop tokens to be evaluated.
 
+* Printing
+
+Tokens <code>`</code> and <code>``</code> print the next evaluated token on the
+screen. The former one accepts only strings and prints them as is, the latter one
+accepts any other token and prints it some string representation.
+
 ... TO BE CONTINUED
