@@ -290,6 +290,8 @@ to read. Currently the following formats are supported:
 * "ln" results in string with a single line read from file (excluding the trailing
 newline character).
 
+* "b", "s", "i" and "l" read 8, 16, 32 and 64-bit numbers respectively.
+
 ### Miscelaneous
 
 Tokens: `@ $ ; |~ |:`.

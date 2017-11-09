@@ -73,8 +73,27 @@ static int read_line(struct cy_stream *st, struct cy_value *v)
 	return 1;
 }
 
+#define READ_NUMBER(st, v, type) do {			\
+	type val;					\
+	if (fread(&val, sizeof(val), 1, st->f) == 0)	\
+		return feof(st->f) ? 1 : -1;		\
+	v->t = CY_V_NUMBER;				\
+	v->v_i = val;					\
+	return 1;					\
+} while (0)
+
+
+static int read_byte(struct cy_stream *st, struct cy_value *v) { READ_NUMBER(st, v, unsigned char); }
+static int read_short(struct cy_stream *st, struct cy_value *v) { READ_NUMBER(st, v, unsigned short); }
+static int read_int(struct cy_stream *st, struct cy_value *v) { READ_NUMBER(st, v, unsigned int); }
+static int read_long(struct cy_stream *st, struct cy_value *v) { READ_NUMBER(st, v, unsigned long); }
+
 static struct stream_format formats[] = {
 	{ .f = "ln", .read = read_line, },
+	{ .f = "c",  .read = read_byte, },
+	{ .f = "s",  .read = read_short, },
+	{ .f = "i",  .read = read_int, },
+	{ .f = "l",  .read = read_long, },
 	{ },
 };
 
