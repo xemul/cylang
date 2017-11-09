@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "cy.h"
 
 static int show_list(struct list_head *h, char tc, struct cy_token *);

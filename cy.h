@@ -1,5 +1,8 @@
+#define _GNU_SOURCE
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 static inline bool is_space_at(const char *ptr)
 {
@@ -172,7 +175,6 @@ struct cy_command {
 	struct cy_command *l;
 };
 void add_commands(struct cy_command *);
-void add_command(struct cy_command *);
 void init_aryth(void);
 void init_declare(void);
 void init_show(void);
@@ -182,6 +184,7 @@ void init_string(void);
 void init_cblocks(void);
 void init_cond(void);
 void init_misc(void);
+void init_stream(void);
 
 int try_resolve_sym(struct cy_token *t);
 

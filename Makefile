@@ -12,6 +12,7 @@ OBJS += cblock.o
 OBJS += cond.o
 OBJS += rbtree.o
 OBJS += misc.o
+OBJS += stream.o
 
 CFLAGS += -Wall -Werror
 

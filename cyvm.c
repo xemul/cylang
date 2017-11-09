@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
-#include <string.h>
 #include "cy.h"
 
 void show_token_err(struct cy_token *t, const char *fmt, ...)

@@ -1,6 +1,3 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "cy.h"
 
 static unsigned int map_depth = 0;

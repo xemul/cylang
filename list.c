@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "cy.h"
 
 static void copy_list(struct list_head *from, struct list_head *to)

@@ -1,7 +1,4 @@
 #define _GNU_SOURCE
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "cy.h"
 
 #define MAX_SYM_LEN	64

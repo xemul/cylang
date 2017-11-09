@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cy.h"
 
 static int eval_2arg_math(struct cy_token *a, struct cy_token *b, struct cy_file *f)

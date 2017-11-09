@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <string.h>
 #include "cy.h"
 
 #define CY_CMD_HASH_BITS	5
@@ -23,18 +21,6 @@ static unsigned int strhash(const char *val)
 		val++;
 		s++;
 	}
-}
-
-void add_command(struct cy_command *cmd)
-{
-	unsigned int hv;
-
-	hv = strhash(cmd->name) & CY_CMD_HASH_MASK;
-	cmd->n = cmd_hash[hv];
-	cmd_hash[hv] = cmd;
-
-	*last = cmd;
-	last = &cmd->l;
 }
 
 static int try_resolve_command(struct cy_token *t)
@@ -71,6 +57,18 @@ int cy_resolve(struct cy_token *t)
 	return -1;
 }
 
+static void add_command(struct cy_command *cmd)
+{
+	unsigned int hv;
+
+	hv = strhash(cmd->name) & CY_CMD_HASH_MASK;
+	cmd->n = cmd_hash[hv];
+	cmd_hash[hv] = cmd;
+
+	*last = cmd;
+	last = &cmd->l;
+}
+
 void add_commands(struct cy_command *cmds)
 {
 	int i;
@@ -90,6 +88,7 @@ void init_resolver(void)
 	init_cblocks();
 	init_cond();
 	init_misc();
+	init_stream();
 }
 
 void show_commands(void)
