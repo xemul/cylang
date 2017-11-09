@@ -1,5 +1,25 @@
 #include "cy.h"
 
+bool cy_empty_value(struct cy_value *v)
+{
+	switch (v->t) {
+	case CY_V_NOVALUE:
+		return true;
+	case CY_V_BOOL:
+		return !v->v_bool;
+	case CY_V_LIST:
+		return list_empty(&v->v_list->h);
+	case CY_V_MAP:
+		return RB_EMPTY_ROOT(&v->v_map->r);
+	case CY_V_STRING:
+		return v->v_str[0] == '\0';
+	case CY_V_NUMBER:
+		return v->v_i == 0;
+	}
+
+	return false;
+}
+
 #define OP_EQ	1
 #define OP_NE	2
 #define OP_GE	3

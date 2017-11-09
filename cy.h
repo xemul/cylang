@@ -198,6 +198,7 @@ int try_resolve_sym(struct cy_token *t);
 bool cy_compare(struct cy_value *v1, struct cy_value *v2);
 int cy_list_del(struct cy_value *l, struct cy_value *i);
 int cy_list_splice(struct cy_value *l1, struct cy_value *l2, struct cy_value *res);
+bool cy_empty_value(struct cy_value *v);
 bool check_in_list(struct cy_list *l, struct cy_value *);
 int cy_map_del(struct cy_value *m, struct cy_value *k);
 int dereference_list_elem(struct cy_token *t, struct cy_value *l, struct cy_value *kv);

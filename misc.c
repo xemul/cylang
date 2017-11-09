@@ -114,7 +114,11 @@ static int eval_default_value(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &b) <= 0)
 		return -1;
 
-	t->v = (a.v.t != CY_V_NOVALUE ? a.v : b.v);
+	if (!cy_empty_value(&a.v))
+		t->v = a.v;
+	else
+		t->v = b.v;
+
 	return 1;
 }
 

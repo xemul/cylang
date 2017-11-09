@@ -62,10 +62,7 @@ static int eval_cond_return(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &rt) <= 0)
 		return -1;
 
-	if (rt.v.t == CY_V_NOVALUE)
-		return 1;
-
-	if (rt.v.t == CY_V_BOOL && !rt.v.v_bool)
+	if (cy_empty_value(&rt.v))
 		return 1;
 
 	t->v = rt.v;

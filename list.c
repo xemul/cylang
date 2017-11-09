@@ -143,28 +143,25 @@ static int eval_list(struct cy_token *t, struct cy_file *f)
 
 static int eval_list_gen(struct cy_token *t, struct cy_file *f)
 {
-	int i;
-	struct cy_token lf, ls, lt;
-
-	if (cy_eval_next_x(f, &lf, CY_V_NUMBER) <= 0)
-		return -1;
-	if (cy_eval_next_x(f, &ls, CY_V_NUMBER) <= 0)
-		return -1;
-	if (cy_eval_next_x(f, &lt, CY_V_NUMBER) <= 0)
-		return -1;
+	struct cy_token gt;
+	struct cy_list_value *lv;
+	struct cy_ctoken *cur;
 
 	t->v.t = CY_V_LIST;
 	t->v.v_list = malloc(sizeof(struct list_head));
 	INIT_LIST_HEAD(&t->v.v_list->h);
 
-	for (i = lf.v.v_i; i < lt.v.v_i; i += ls.v.v_i) {
-		struct cy_list_value *lv;
+	cur = f->nxt;
+again:
+	if (cy_eval_next(f, &gt) <= 0)
+		return -1;
 
+	if (!cy_empty_value(&gt.v)) {
+		f->nxt = cur;
 		lv = malloc(sizeof(*lv));
-		lv->v.t = CY_V_NUMBER;
-		lv->v.v_i = i;
-
+		lv->v = gt.v;
 		list_add_tail(&lv->l, &t->v.v_list->h);
+		goto again;
 	}
 
 	return 1;

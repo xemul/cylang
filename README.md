@@ -33,7 +33,9 @@ and it terninates at the next `#` (not at the end of line).
 
 Some tokens may evaluate a boolean value or a special `NOVALUE` thing.
 The latter is the default evaluation result for any token unless 
-explicitly documented.
+explicitly documented. The NOVALUE, empty string, list or map, false
+boolean and zero number are called "empty value". Empty values are
+used in `(:`, `<?` and `;` commands.
 
 Tokens may also result in a stream value, which represents an open
 file, pipe, socket, etc.
@@ -179,9 +181,8 @@ Tokens: `( ) (: (| (- (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
 start and end respectively. Other tokens typically need at least one more 
 list token.
 
-`(:` generates a new list. It evaluates 3 more number tokens and results in
-a new  list with numbers starting from the 1st number ending below the 3rd one 
-with the 2nd number being an incremental step (works only for positive values).
+`(:` generates a new list. It continuously evaluates the next token until it
+results in an empty value, and results in a list of generated values.
 
 `(|` maps a list. It evaluates next list token and grabs one more token, then for 
 each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
@@ -279,7 +280,7 @@ makes `?` be evaluated into 1, since it's `?` that caused execution of the block
 with `<-`.
 
 The `<?` token is used to propagate the "return" one more code block up. It evaluates
-the next token, if it's a NOVALUE or boolean FALSE does nothing, otherwise it acts
+the next token, if it's an empty value the `<?` does nothing, otherwise it acts
 as `<-` stopping execution of current block and evaluating it's caller into the value.
 
 ### Streams
@@ -288,12 +289,14 @@ Tokens: `<~ <~> -> <-> ->> <->>` to open a stream and `<< >>` to read from and
 write to a stream.
 
 Opening tokens evaluate the string token and open the file by the string name.
-Mode is r, r+, w, w+, a and a+ from fopen man page respectively.
+Mode is r, r+, w, w+, a and a+ from fopen man page respectively. The result is
+stream value.
 
 Reading from stream evaluates a stream token and a string token that shows what
 to read. Currently the following formats are supported:
 
-* "ln" reads a full line excluding the trailing newline character.
+* "ln" results in string with a single line read from file (excluding the trailing
+newline character).
 
 ### Miscelaneous
 
@@ -305,7 +308,7 @@ one is present in the list. Results in a boolean value.
 The `$` evaluates the next token, checks it to be list, map or string and results
 in a number value equal to the size of the argument.
 
-The `;` evaluates two next tokens. If the first one is not a NOVALUE `;` it results
+The `;` evaluates two next tokens. If the first one is not empty, the `;` results
 in this value, otherwise `;` results in the 2nd value. It's token meaning is the
 "default value".
 
