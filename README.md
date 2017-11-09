@@ -304,9 +304,11 @@ The `;` evaluates two next tokens. If the first one is not empty, the `;` result
 in this value, otherwise `;` results in the 2nd value. It's token meaning is the
 "default value".
 
-`|~` maps a list (or a map). It evaluates next list token and grabs one more token,
-then for each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
-list element in it use a cursor token) then puts the result into the resulting list.
+`|~` maps a list or a map. It evaluates next token and grabs one more token, then
+for each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
+list element or map value use a cursor token) then puts the result into the
+resulting list or map. For maps the key to be used is inherited from the original
+map.
 
 `|:` filters a list (or a map). Works similarly to map, but the 2nd token should 
 result in a boolean value meaning that the respective element (a cursor) should be

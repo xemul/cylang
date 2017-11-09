@@ -29,6 +29,35 @@ static int map_list(struct cy_token *t, struct cy_token *lht, struct cy_file *f)
 	return 1;
 }
 
+static int map_map(struct cy_token *t, struct cy_token *mt, struct cy_file *f)
+{
+	struct rb_node *n;
+	struct cy_ctoken *cur;
+
+	t->v.t = CY_V_MAP;
+	t->v.v_map = malloc(sizeof(struct rb_root));
+	t->v.v_map->r = RB_ROOT;
+
+	cur = f->nxt;
+	for (n = rb_first(&mt->v.v_map->r); n != NULL; n = rb_next(n)) {
+		struct cy_map_value *mv;
+		struct cy_token nt;
+
+		mv = rb_entry(n, struct cy_map_value, n);
+		set_cursor(&mv->v);
+		f->nxt = cur;
+		if (cy_eval_next(f, &nt) <= 0)
+			return -1;
+
+		if (map_add_value(mv->key, &nt.v, &t->v.v_map->r, false) <= 0)
+			return -1;
+	}
+
+	set_cursor(NULL);
+
+	return 1;
+}
+
 static int eval_map(struct cy_token *t, struct cy_file *f)
 {
 	struct cy_token st;
@@ -38,6 +67,8 @@ static int eval_map(struct cy_token *t, struct cy_file *f)
 
 	if (st.v.t == CY_V_LIST)
 		return map_list(t, &st, f);
+	if (st.v.t == CY_V_MAP)
+		return map_map(t, &st, f);
 
 	show_token_err(t, "Bad object %s to map", vtype2s(st.v.t));
 	return -1;
