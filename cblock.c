@@ -99,8 +99,8 @@ int cy_call_cblock(struct cy_token *ct, struct cy_file *f, struct cy_value *rv)
 }
 
 static struct cy_command cmd_cblock[] = {
-	{ .name = "{", .t = { .ts = "cblock", .priv = OP_CBLOCK, }, },
-	{ .name = "}", .t = { .ts = "cblock_end", .eval = eval_cblock_end, .priv = OP_CBLOCK_END, }, },
+	{ .name = "{", .t = { .ts = "cblock start", .priv = OP_CBLOCK, }, },
+	{ .name = "}", .t = { .ts = "cblock end", .eval = eval_cblock_end, .priv = OP_CBLOCK_END, }, },
 	{ .name = "->", .t = { .ts = "call", .eval = eval_call, }, },
 	{ .name = ".", .t = { .ts = "nop", .priv = OP_CBLOCK_NOP, }, },
 	{ .name = "<-", .t = { .ts = "return", .eval = eval_return, }, },

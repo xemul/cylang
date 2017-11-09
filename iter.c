@@ -123,8 +123,8 @@ static int eval_filter(struct cy_token *t, struct cy_file *f)
 }
 
 static struct cy_command cmd_iter[] = {
-	{ .name = "|~", .t = { .ts = "map", .eval = eval_map, }, },
-	{ .name = "|:", .t = { .ts = "filter", .eval = eval_filter, }, },
+	{ .name = "|~", .t = { .ts = "map collection", .eval = eval_map, }, },
+	{ .name = "|:", .t = { .ts = "filter collection", .eval = eval_filter, }, },
 };
 
 void init_iter(void)

@@ -272,12 +272,13 @@ static int eval_list_pop(struct cy_token *t, struct cy_file *f)
 }
 
 static struct cy_command cmd_list[] = {
-	{ .name = "(", .t = { .ts = "list", .eval = eval_list, }, },
-	{ .name = ")", .t = { .ts = "list_end", .eval = eval_list_end, }, },
+	{ .name = "(", .t = { .ts = "list start", .eval = eval_list, }, },
+	{ .name = ")", .t = { .ts = "list end", .eval = eval_list_end, }, },
 	{ .name = "(:", .t = { .ts = "list gen", .eval = eval_list_gen, }, },
-	{ .name = "(<", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_TAIL, }, },
-	{ .name = "(>", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_HEAD, }, },
-	{ .name = "(<>", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_BOTH, }, },
+
+	{ .name = "(<", .t = { .ts = "list head", .eval = eval_list_cut, .priv = OP_CUT_TAIL, }, },
+	{ .name = "(>", .t = { .ts = "list tail", .eval = eval_list_cut, .priv = OP_CUT_HEAD, }, },
+	{ .name = "(<>", .t = { .ts = "list body", .eval = eval_list_cut, .priv = OP_CUT_BOTH, }, },
 
 	{ .name = "+(", .t = { .ts = "list add head", .eval = eval_list_add, .priv = OP_LIST_HEAD, }, },
 	{ .name = "+)", .t = { .ts = "list add tail", .eval = eval_list_add, .priv = OP_LIST_TAIL, }, },

@@ -187,8 +187,8 @@ int cy_map_del(struct cy_value *m, struct cy_value *k)
 }
 
 static struct cy_command cmd_map[] = {
-	{ .name = "[", .t = { .ts = "map", .eval = eval_map, }, },
-	{ .name = "]", .t = { .ts = "map_end", .eval = eval_map_end, }, },
+	{ .name = "[", .t = { .ts = "map start", .eval = eval_map, }, },
+	{ .name = "]", .t = { .ts = "map end", .eval = eval_map_end, }, },
 	{}
 };
 
