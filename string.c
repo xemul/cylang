@@ -41,12 +41,18 @@ static int format_one(char *str, char **end, struct cy_token *st)
 	len = *end - str - 1;
 
 	{
-		char fbuf[len + 1];
+		char fbuf[len + 1], *fmt;
 		struct cy_value cv;
 		char i_aux[32];
 
 		strncpy(fbuf, str + 1, len);
 		fbuf[len] = '\0';
+
+		fmt = strchr(fbuf, ':');
+		if (fmt != NULL) {
+			*fmt = '\0';
+			fmt++;
+		}
 
 		if (try_deref_symbol(fbuf, &cv, false) < 0)
 			return -1;
@@ -56,7 +62,9 @@ static int format_one(char *str, char **end, struct cy_token *st)
 			append_buf(cv.v_str, strlen(cv.v_str));
 			break;
 		case CY_V_NUMBER:
-			ret = sprintf(i_aux, "%d", cv.v_i);
+			if (fmt == NULL)
+				fmt = "%li";
+			ret = sprintf(i_aux, fmt, cv.v_i);
 			append_buf(i_aux, ret);
 			break;
 		default:

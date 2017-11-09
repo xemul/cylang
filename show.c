@@ -13,7 +13,7 @@ static int show_value(struct cy_value *v, char tc, struct cy_token *st)
 		printf("NOVALUE%c", tc);
 		break;
 	case CY_V_NUMBER:
-		printf("%d%c", v->v_i, tc);
+		printf("%li%c", v->v_i, tc);
 		break;
 	case CY_V_STRING:
 		printf("\"%s\"%c", v->v_str, tc);

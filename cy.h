@@ -73,7 +73,7 @@ struct cy_stream {
 struct cy_value {
 	unsigned int t;
 	union {
-		int			v_i;
+		long			v_i;
 		const char		*v_str;
 		const char		*v_sym;
 		struct cy_list		*v_list;
