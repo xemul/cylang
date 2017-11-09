@@ -13,6 +13,7 @@ OBJS += cond.o
 OBJS += rbtree.o
 OBJS += misc.o
 OBJS += stream.o
+OBJS += iter.o
 
 CFLAGS += -Wall -Werror
 

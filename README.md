@@ -177,20 +177,12 @@ it's not like && and || in C.
 
 ### Lists
 
-Tokens: `( ) (: (| (- (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
+Tokens: `( ) (: (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
 start and end respectively. Other tokens typically need at least one more 
 list token.
 
 `(:` generates a new list. It continuously evaluates the next token until it
 results in an empty value, and results in a list of generated values.
-
-`(|` maps a list. It evaluates next list token and grabs one more token, then for 
-each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
-list element in it use a cursor token) then puts the result into the resulting list.
-
-`(-` filters a list. Works similarly to map, but the 2nd token should result in
-a boolean value meaning that the respective element (a cursor) should be included
-into the resulting list or not.
 
 `(>`, `(<` and `(<>` cut the list and result in a new one. Evaluate one list token
 and one (or two for the `<>` one) number(s). The resulting list is cut from head, 
@@ -300,7 +292,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ ;`.
+Tokens: `@ $ ; |~ |:`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -311,6 +303,14 @@ in a number value equal to the size of the argument.
 The `;` evaluates two next tokens. If the first one is not empty, the `;` results
 in this value, otherwise `;` results in the 2nd value. It's token meaning is the
 "default value".
+
+`|~` maps a list (or a map). It evaluates next list token and grabs one more token,
+then for each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
+list element in it use a cursor token) then puts the result into the resulting list.
+
+`|:` filters a list (or a map). Works similarly to map, but the 2nd token should 
+result in a boolean value meaning that the respective element (a cursor) should be
+included into the resulting list or not.
 
 ## Launching
 

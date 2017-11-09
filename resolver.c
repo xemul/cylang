@@ -89,6 +89,7 @@ void init_resolver(void)
 	init_cond();
 	init_misc();
 	init_stream();
+	init_iter();
 }
 
 void show_commands(void)

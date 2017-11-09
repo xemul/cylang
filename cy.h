@@ -192,6 +192,7 @@ void init_cblocks(void);
 void init_cond(void);
 void init_misc(void);
 void init_stream(void);
+void init_iter(void);
 
 int try_resolve_sym(struct cy_token *t);
 

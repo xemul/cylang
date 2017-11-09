@@ -167,76 +167,6 @@ again:
 	return 1;
 }
 
-static int eval_list_map(struct cy_token *t, struct cy_file *f)
-{
-	struct cy_token lht;
-	struct cy_list_value *lv;
-	struct cy_ctoken *cur;
-
-	if (cy_eval_next_x(f, &lht, CY_V_LIST) <= 0)
-		return -1;
-
-	t->v.t = CY_V_LIST;
-	t->v.v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&t->v.v_list->h);
-
-	cur = f->nxt;
-	list_for_each_entry(lv, &lht.v.v_list->h, l) {
-		struct cy_token nt;
-		struct cy_list_value *nv;
-
-		set_cursor(&lv->v);
-		f->nxt = cur;
-		if (cy_eval_next(f, &nt) <= 0)
-			return -1;
-
-		nv = malloc(sizeof(*lv));
-		nv->v = nt.v;
-		list_add_tail(&nv->l, &t->v.v_list->h);
-	}
-
-	set_cursor(NULL);
-
-	return 1;
-}
-
-static int eval_list_filter(struct cy_token *t, struct cy_file *f)
-{
-	struct cy_token lht;
-	struct cy_list_value *lv;
-	struct cy_ctoken *cur;
-
-	if (cy_eval_next_x(f, &lht, CY_V_LIST) <= 0)
-		return -1;
-
-	t->v.t = CY_V_LIST;
-	t->v.v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&t->v.v_list->h);
-
-	cur = f->nxt;
-	list_for_each_entry(lv, &lht.v.v_list->h, l) {
-		struct cy_token ft;
-
-		set_cursor(&lv->v);
-
-		f->nxt = cur;
-		if (cy_eval_next_x(f, &ft, CY_V_BOOL) <= 0)
-			return -1;
-
-		if (ft.v.v_bool) {
-			struct cy_list_value *nv;
-
-			nv = malloc(sizeof(*lv));
-			nv->v = lv->v;
-			list_add_tail(&nv->l, &t->v.v_list->h);
-		}
-	}
-
-	set_cursor(NULL);
-
-	return 1;
-}
-
 #define OP_CUT_HEAD	1
 #define OP_CUT_TAIL	2
 #define OP_CUT_BOTH	3
@@ -345,8 +275,6 @@ static struct cy_command cmd_list[] = {
 	{ .name = "(", .t = { .ts = "list", .eval = eval_list, }, },
 	{ .name = ")", .t = { .ts = "list_end", .eval = eval_list_end, }, },
 	{ .name = "(:", .t = { .ts = "list gen", .eval = eval_list_gen, }, },
-	{ .name = "(|", .t = { .ts = "list map", .eval = eval_list_map, }, },
-	{ .name = "(-", .t = { .ts = "list filter", .eval = eval_list_filter, }, },
 	{ .name = "(<", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_TAIL, }, },
 	{ .name = "(>", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_HEAD, }, },
 	{ .name = "(<>", .t = { .ts = "list element(s)", .eval = eval_list_cut, .priv = OP_CUT_BOTH, }, },
