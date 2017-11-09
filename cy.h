@@ -48,7 +48,7 @@ void show_token_err(struct cy_token *, const char *fmt, ...);
 struct cy_type {
 	char *ts;
 	int (*eval)(struct cy_token *, struct cy_file *);
-	unsigned priv;
+	unsigned long priv;
 };
 
 #include "list.h"
@@ -66,6 +66,10 @@ struct cy_cblock {
 	struct list_head h;
 };
 
+struct cy_stream {
+	FILE *f;
+};
+
 struct cy_value {
 	unsigned int t;
 	union {
@@ -77,6 +81,7 @@ struct cy_value {
 		struct cy_cblock	*v_cblk;
 		bool			v_bool;
 		int			v_sn;
+		struct cy_stream	*v_stream;
 	};
 };
 
@@ -115,6 +120,7 @@ enum {
 	CY_V_MAP,
 	CY_V_CBLOCK,
 	CY_V_BOOL,
+	CY_V_STREAM,
 };
 
 #define CY_V_TERMINATOR	0x70000000
@@ -163,6 +169,7 @@ int cy_resolve(struct cy_token *t);
 
 int try_resolve_symbol(struct cy_token *t);
 int try_resolve_cvalue(struct cy_token *t);
+int try_resolve_stream(struct cy_token *t);
 int try_deref_symbol(const char *val, struct cy_value *sv, bool strict);
 bool is_nop_token(struct cy_token *t);
 bool is_symbol_token(struct cy_token *t);

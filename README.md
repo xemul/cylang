@@ -31,12 +31,16 @@ No backslashes are supported (yet), they are included in the string
 as is. The 2nd exception is token started with `#`. It's a comment
 and it terninates at the next `#` (not at the end of line).
 
+Some tokens may evaluate a boolean value or a special `NOVALUE` thing.
+The latter is the default evaluation result for any token unless 
+explicitly documented.
+
+Tokens may also result in a stream value, which represents an open
+file, pipe, socket, etc.
+
 To sum up -- a token can be an integer, a string, a symbol, define
-list, map or a command block or to be a command (or a comment, but
-these are ignored). Also some tokens may evaluate a boolean value or
-a special `NOVALUE` thing. The latter is the default evaluation result
-for any token unless explicitly documented. Here's how tokens are
-evaluated.
+list, map or a command block, be a stream, and NOVALUE or to be a
+command (or a comment, but these are ignored).
 
 ### Numbers and strings
 
@@ -91,6 +95,8 @@ list loop, list map or list filter command (see below)
 * `_?` -- a random number (unlimited, use the mod operation to trim it)
 
 * `_:` -- current namespace (see below)
+
+* `_<`, `_>` and `_>!` -- stdin, stdout and stderr streams respectively
 
 An underbar anywhere inside symbol name is considered to be just the part of
 the name.
@@ -275,6 +281,19 @@ with `<-`.
 The `<?` token is used to propagate the "return" one more code block up. It evaluates
 the next token, if it's a NOVALUE or boolean FALSE does nothing, otherwise it acts
 as `<-` stopping execution of current block and evaluating it's caller into the value.
+
+### Streams
+
+Tokens: `<~ <~> -> <-> ->> <->>` to open a stream and `<< >>` to read from and
+write to a stream.
+
+Opening tokens evaluate the string token and open the file by the string name.
+Mode is r, r+, w, w+, a and a+ from fopen man page respectively.
+
+Reading from stream evaluates a stream token and a string token that shows what
+to read. Currently the following formats are supported:
+
+* "ln" reads a full line excluding the trailing newline character.
 
 ### Miscelaneous
 

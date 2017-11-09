@@ -96,5 +96,5 @@ void show_commands(void)
 	struct cy_command *cmd;
 
 	for (cmd = cmd_list; cmd != NULL; cmd = cmd->l)
-		printf("%24s%4s\n", cmd->t.ts, cmd->name);
+		printf("%24s%5s\n", cmd->t.ts, cmd->name);
 }

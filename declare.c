@@ -148,7 +148,13 @@ int try_resolve_symbol(struct cy_token *t)
 			return 1;
 		}
 
-		return try_resolve_cvalue(t);
+		if (try_resolve_cvalue(t))
+			return 1;
+
+		if (try_resolve_stream(t))
+			return 1;
+
+		return 0;
 	}
 
 	if (!is_alpha(val[0]))
