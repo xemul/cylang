@@ -13,8 +13,6 @@ bool cy_empty_value(struct cy_value *v)
 		return RB_EMPTY_ROOT(&v->v_map->r);
 	case CY_V_STRING:
 		return v->v_str[0] == '\0';
-	case CY_V_NUMBER:
-		return v->v_i == 0;
 	}
 
 	return false;

@@ -33,9 +33,9 @@ and it terninates at the next `#` (not at the end of line).
 
 Some tokens may evaluate a boolean value or a special `NOVALUE` thing.
 The latter is the default evaluation result for any token unless 
-explicitly documented. The NOVALUE, empty string, list or map, false
-boolean and zero number are called "empty value". Empty values are
-used in `(:`, `<?` and `;` commands.
+explicitly documented. The NOVALUE, empty string, list or map and false
+boolean are called "empty value". Empty values are used in `(:`, `<?`
+and `;` commands.
 
 Tokens may also result in a stream value, which represents an open
 file, pipe, socket, etc.
