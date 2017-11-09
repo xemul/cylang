@@ -17,88 +17,95 @@ If a token starts with a letter (any case) it's considered to be
 a symbol. Symbols may include letters, digits, underbars and dots
 inside. No other characters are allowed.
 
-If a token is ( it's a list, if a token is [ it's a map and if
-a token is { it's a commands block.
+If a token is `(` it's a list, if a token is `[` it's a map and if
+a token is `{` it's a commands block. They start the respective set
+(or collection) and terminate at the next paired closing brace.
 
 Otherwise a token is considered to be a command.
 
 Two exceptions are made in the space-separation rule above -- if
-a token starts with a " or ' then it's considered to be a string
-constant and the token ends with the next " or ' respectively. All
+a token starts with a `"` or `'` then it's considered to be a string
+constant and the token ends with the next `"` or `'` respectively. All
 spaces, tabs and even newlines are included in the string as is.
 No backslashes are supported (yet), they are included in the string
-as is. The 2nd exception is token started with #. It's a comment
-and it terninates at the next # (not at the end of line).
+as is. The 2nd exception is token started with `#`. It's a comment
+and it terninates at the next `#` (not at the end of line).
 
 To sum up -- a token can be an integer, a string, a symbol, define
 list, map or a command block or to be a command (or a comment, but
 these are ignored). Also some tokens may evaluate a boolean value or
-a special NOVALUE thing. Here's how they are evaluated.
+a special `NOVALUE` thing. The latter is the default evaluation result
+for any token unless explicitly documented. Here's how tokens are
+evaluated.
 
 ### Numbers and strings
 
-These are evaluated immediately and just result in the respective value.
+These are evaluated immediately into the respective value. Quotes for
+strings are not included into it.
 
 ### Lists
 
-List is evaluated by evaluating all the subsequent tokens untill the )
-one which denotes the end of the list.
+List is evaluated by evaluating all the subsequent tokens untill the `)`
+one, which denotes the end of the list. "Subsequent evaluation" literally
+means evaluation, e.g. the `( + 1 2 )` means a list of one element being
+the sum of 1 and 2.
 
 ### Maps
 
 Maps always use strings as keys and are evaluated by evaluating all the
-subsequent tokens in pairs, considering the first one to be the key and
-the second one to be any other token.
+subsequent tokens in pairs, considering the first one to be the string and
+the second one to be any other token. The first one is thus a key and the
+second one is the vlaue.
 
 For simplicity in describing and using objects the key may not be a string
-token (startin with " or '), but be a symbol (without dots). In any case
-the key token is treated as just a string. IOW two next tokens mean the same
+token (i.e. it may not start with `"` or `'`), but can be a symbol without
+dots. In either case the key token is treated as just a string. IOW two next
+tokens mean the same
 
     [ "a" 1 ]
     [ a 1 ]
 
-Mind the space before the final ], as the latter must be a separate token.
+Mind the space before the final `]`, as the latter must be a separate token.
 
 ### Command blocks
 
-Like lists, command block token grabs all the subsequent tokens until the }
+Like lists, command block token grabs all the subsequent tokens until the `}`
 one. Note, that it only grabs the tokens as is, without evaluating them. To
 evaluate the tokens in a command block you should pass control to it with
-one of the commands below.
+one of the commands described below.
 
 ### Symbols
 
-Symbols are variable names. They are always evaluated into the value they
+Symbols are like variable names. They are always evaluated into the value they
 refer to (except in a single case when a new symbol is declared). Symbols
 can be considered to be pointers to other objects.
 
-Characters _ and . are special in a symbol name. If a symbol starts with a
-_ it's one the service symbols. These are
+Characters `_` and `.` are special in a symbol name. If a symbol starts with a
+`_` it's one the service symbols. These are
 
-    * _ -- a cursor. This is a symbol that refers to the current
-     element in the list loop, list map or list filter (see below)
-     command
+* `_` -- a cursor. This is a symbol that refers to the current element in the
+list loop, list map or list filter command (see below)
 
-    * _- and _+ -- false and true constants respectively
+* `_-` and `_+` -- false and true constants respectively
 
-    * _? -- a random number (unlimited)
+* `_?` -- a random number (unlimited, use the mod operation to trim it)
 
-    * _: -- current namespace (see below)
+* `_:` -- current namespace (see below)
 
-An underbar anywhere inside symbol name is considered to be just the
-part of the name.
+An underbar anywhere inside symbol name is considered to be just the part of
+the name.
 
-A dot (.) inside symbol is used to split a symbol name into pieces each
-of which is considered to be a key in the previously referenced object,
-which in turn is expected to be a map or a list. For example the symbol
-`a.b` means find the object named "a", then find an object named "b" in it
-(provided a referred to a map).
+A dot (`.`) inside symbol is used to split a symbol name into pieces each
+of which is considered to be a key in the collection (list or map) that has
+been referenced by the previous part of the symbol. For example the symbol
+`a.b` means find the object named "a", then find an object named "b" in it,
+provided `a` referred to a map.
 
-Note, that the value "b" is considered to be the key. If you want to
-treat "b" as another symbol that cotains the key value you can use two
-dots as separator. For example `a..b` means -- find the object "a", then 
-find the symbol "b", get what it refers to (it should be a string), then 
-find in "a" the value by the obtained string key.
+Note, that the value "b" is treated as the key value. If you want to treat
+"b" as another symbol that cotains the key value, you should use two dots as
+separator. For example `a..b` means -- find the object "a", then find the
+symbol "b", get what it refers to (it should be a string), then find in "a"
+the value by the obtained string key.
 
 Dot can follow a cursor, for example the symbol `_.a` means take the cursor
 object, treat it as a map and find object "a" in it.
@@ -108,44 +115,42 @@ find list named "a" and get the 0th element from it. Respectively `a..b`
 means find list "a", then get what b refers to (should be a number) then
 get the b-th element.
 
-To declare a new symbol there's a ! command, find its description below.
+To declare a new symbol there's a `!` command, find its description below.
 
-### Commands
+## Command tokens
 
 As was said above, commands may need more subsequent tokens to be evaluated.
 Here's how.
 
-* Declaring a symbol
+### Declaring a symbol
 
 Token `!` makes a new symbol. It takes a symbol token, and dereferences it all
-excluding the traling component. Then it takes another token, checks that the
-evaluated symbol part referes to a map and creates a new element in the map.
+excluding the traling component. The result should be a map. Then it evaluates 
+the next token and creates a new element in the map referenced by the 1st token
+with the key being the trailing component of it and the value being the 2nd token.
 
-All the symbols live in a root map, so if the symbol name doesn't have any dots
-in it the new entry is created in this root map thus resulting in somehwat that
-looks like a global variable. For example
-
-    ! x 1
-    
-makes a variable named x being a number 1.
+The question is -- if all the symbols are created in some map, where would a
+symbol without dots be created. The ansewer is -- there's an implicit root map,
+so if the symbol name doesn't have any dots in it the new entry is created in
+this root map thus resulting in somehwat that looks like a global variable. 
+For example the `! x 1` makes a variable named "x" being a number 1. Respectively
 
     ! x [ ]
     ! x.a "string"
-    
+
 makes a new empty map named "x", then makes an entry with the key "a" in it being
 a string with the value "string".
 
-Since all symbols live in a root map, it's possible to change this map into some
-other one. This is done with the `:` command. It evaluates a map token after it
-and sets it as root one. All the service variables mentioned above remain accessible
-and the `_:` can be used to return back to the original namespace.
+Since all symbols start from the root map, it's possible to change this map into some
+other map. This is done with the `:` command. It evaluates the next map token and
+sets it as the root one. All the service variables mentioned above remain accessible
+in any map, the `_:` can be used to return back to the original namespace.
 
-* Arythmetics
+### Arythmetics
 
-Tokens: `+ - / * %`. Evaluate two more tokens.
-
-If the next tokens are numbers they are added, substracted, etc. Otherwise
-some magic comes up.
+Tokens: `+ - / * %`. Evaluate two more tokens. If the next tokens are numbers they 
+are added, substracted, etc. The result is the number as well. Otherwise some magic
+comes up.
 
  \+ on two strings concatenates those and results in a new string
  
@@ -155,121 +160,164 @@ some magic comes up.
  
  \- on a map and a string removes the respective key from the map
 
-* Boolean
+### Boolean
 
-Tokens: `& | ^ ~`. All but ~ need two more boolean tokens, ~ needs one.
-Do what they are expected to, but note, that for & and | both tokens ARE
-evaluated before doing the operation, it's not like && and || in C.
+Tokens: `& | ^ ~`. All but `~` need two more boolean tokens, `~` needs one.
+Do what they are expected to and result in a boolean value. Note, that for
+`&` and `|` both argument tokens ARE evaluated before doing the operation,
+it's not like && and || in C.
 
-* Lists
+### Lists
 
-Tokens: `( ) (: (| (- (< (> (<> +( +) -( -)`. Tokens ( and ) mark the list
+Tokens: `( ) (: (| (- (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
 start and end respectively. Other tokens typically need at least one more 
 list token.
 
-`(:` generates a new list. It needs 3 more number tokens and makes a new 
-list with numbers starting from the 1st number ending below the 3rd one 
-with the 2nd number being an incremental step (works only for positive 
-values).
+`(:` generates a new list. It evaluates 3 more number tokens and results in
+a new  list with numbers starting from the 1st number ending below the 3rd one 
+with the 2nd number being an incremental step (works only for positive values).
 
-`(|` maps a list. It takes one list token and one other token, then for each
-element from the 1st one calls the 2nd token (to refer to the list element 
-to convert use a cursor) then puts into the resulting list.
+`(|` maps a list. It evaluates next list token and grabs one more token, then for 
+each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
+list element in it use a cursor token) then puts the result into the resulting list.
 
-`(-` filters a list. Works similarly to map, but the 2nd token should result
-in a boolean true or false value meaning that the respective element (a cursor)
-should be included into the new list or not.
+`(-` filters a list. Works similarly to map, but the 2nd token should result in
+a boolean value meaning that the respective element (a cursor) should be included
+into the resulting list or not.
 
-`(>`, `(<` and `(<>` cut the list (and produce a new one). Take one list token
-and one (or two for the `<>` one) number(s). New list is cut from head, tail 
-or both respectively up to, but not including, the numbered position(s).
+`(>`, `(<` and `(<>` cut the list and result in a new one. Evaluate one list token
+and one (or two for the `<>` one) number(s). The resulting list is cut from head, 
+tail or both respectively up to, but not including, the numbered position(s). Rule
+of a thumb is `>` results in the right (tail) part of the list and `<` results in
+the left (head) part of the list.
 
-`+(` and `+)` are push to head and push to tail respectively. Take list token 
-and any other one and add the latter to the former.
+`+(` and `+)` are push to head and push to tail respectively. Evaluate list token 
+and one more one of any type, then add the latter value to the former list. The
+result is NOVALUE, the 1st list token is modified in place.
 
-Similarly `-(` and `-)` are pops from head or tail. Take one list token and 
-modify it. Evaluated into whatever is poped from the list or a special NOVALUE 
-if the list is empty.
+Similarly `-(` and `-)` are pops from head or tail. Evaluate one list token and 
+modify it in place. Both result in whatever is poped from the list or in a NOVALUE 
+if the list was empty.
 
-* Operations with strings
+### Operations with strings
 
-`%%` taken a string token and generates a new formatted one. Formatting means
-scanning the string and getting `\(...)` pieces from it. Each `...` piece is
-then considered to be a symbol which gets evaluated and instead of the whole
-`\(...)` block the string representation of it is inserted. E.g.
+Tokens: `%% %~ %/ %^`. All evaluate one more token string to work on.
+
+`%%` results in a new formatted string. Formatting means scanning the argument
+string and getting the `\(...)` pieces from it. Each `...` piece is then
+considered to be a symbol which is dereferenced and instead of the whole `\(...)` 
+block the string representation of it is inserted. E.g.
 
     %% "Hello, \(name)!"
     
-will evaluate the "name" symbol and, if it's a string "world", will result in
+will dereference the "name" symbol and, if it's a string "world", will result in
 a new string "Hello, world!"
 
-`%~` is the atio (or strtol) command. It takes a string and coverts it into
-a number value.
+`%~` is the atio (or strtol) command. Results in a number value corresponding to
+the argument string.
 
-`%/` takes the string and splits it using spaces and tabs as separator. The
-evaluated value is a list with strings.
+`%/` splits the argument string using spaces and tabs as separator. The result is
+a list of strings.
 
-`%^` and `%$` take two strings and evaluate a boolean value meaning whether the
-1st string respectively starts of ends with the second one.
+`%^` and `%$` evaluates one more string and evaluate a boolean value meaning whether
+the first argument respectively starts of ends with the second one.
 
-* Checks, if-s and loops
+### Checks, if-s and loops
 
-Tokens `= != > >= < <=` take two numbers or two strings and compare them as 
-expected. All evaluate into a boolean value.
+Check tokens: `= != > >= < <=`. Evaluate two more tokens of the same type, compare 
+them and retuls in a boolean value.
 
-The `?` takes three tokens -- a boolean one and two command blocks. If the bool
-is true the control is passed to the first block, otherwise to the second. This
-token may get evaluated into some value, see the `<-` command further.
+Ifs and loops tokens: `? ?? ~( ~?`. All evaluate one or more command blocks and
+may pass control to them. All typically result in NOVALUE, but of the `<-` command
+is met in the command block, the if/loop token is evaluated into its argument (see
+more details further).
 
-The `??` token is the multiple choice token. It takes one command block token
-and considers it to consist of bool:block pairs. The first boolean true token 
-which passes control to the respective block token, then the whole ?? evaluation
-stops. This token may as well get evaluated into some value with the `<-` command.
+The `?` evaluates three tokens -- a boolean one and two command blocks. If the bool
+is true the control is passed to the first block, otherwise to the second.
 
-Loops are `~(` and `~?`. The former one take a list and a command block then
+The `??` token is the multiple choice token. It evaluates one command block token
+and considers it to consist of bool:block pairs. The first boolean token evaluated
+into true value passes control to the respective block token, then the whole ??
+evaluation stops.
+
+Loops are `~(` and `~?`. The former one evaluates a list and a command block then
 passes control to the block for each element from the list. To access the element
-into the block use the cursor. The latter one takes boolean token and a command
-block one. The block is executed while the boolean stays true. The `<-` command
-may also cause the loop tokens to be evaluated.
+into the block use the cursor. The latter one grabs boolean token and a evaluates
+a command block one. The block is then executed while the evaluation of the boolean
+one results in true.
 
-* Printing
+### Printing
 
-Tokens <code>`</code> and <code>``</code> print the next evaluated token on the
+Tokens: <code>`</code> and <code>``</code>. Evaluate next token and print it on the
 screen. The former one accepts only strings and prints them as is, the latter one
-accepts any other token and prints it some string representation.
+accepts any other token and prints it some string representation, e.g. strings are
+printed with quotes aound and new lines at the end.
 
-* Command blocks
+### Command blocks
 
-Tokens `{` and `}` denote start and end of the command block, token `.` is a shortcut
-for the `{ }` pair and means a no-op block (useful for `?` and `??` commands). Tokens
-`->`, `<-` and `<?` switch between blocks.
+Tokens: `{ } -> . <- <?`. The `{` and `}` denote start and end of the command block,
+token `.` is a shortcut for the `{ }` pair and means a no-op block (useful as `?`
+and `??` sub-blocks). Tokens `->`, `<-` and `<?` switch between blocks.
 
-The `->` one takes command block and map tokens, sets the map as the namespace, passes
-control to the command block, then restores the namespace back. It's thus the way
-to do a function call with arguments. Using `_:` namespace makes smth like goto.
+The `->` one evaluates a command block token and a map token, sets the map as the 
+namespace, passes control to the command block, then restores the namespace back. 
+It's thus the way to do a function call with arguments. Using `_:` namespace makes 
+smth like goto.
 
 The `<-` is like return or break in C. It evaluates the next token, then completes
-execution of the command block it's within and (!) makes the next token be the result
-of evaluation of whatever token caused the execution of this command block. For
-example `-> { <- 1 }` makes the first `->` be evaluated into 1. The `? _+ { <- 1 } .`
-makes `?` be evaluated into 1, since it's `?` who caused execution of the block
+execution of the current command block and (!) makes the evaluated argument be the 
+result of evaluation of the token that caused the execution of this command block.
+
+E.g. the `-> { <- 1 }` makes the first `->` be evaluated into 1. The `? _+ { <- 1 } .`
+makes `?` be evaluated into 1, since it's `?` that caused execution of the block
 with `<-`.
 
 The `<?` token is used to propagate the "return" one more code block up. It evaluates
 the next token, if it's a NOVALUE or boolean FALSE does nothing, otherwise it acts
 as `<-` stopping execution of current block and evaluating it's caller into the value.
 
-* Miscelaneous
+### Miscelaneous
 
-Token `@` evaluates a list token and one more token and checks whether the latter
-one is present in the list. Evaluates into a boolean value.
+Tokens: `@ $ ;`.
 
-Token `$` evaluates the next token, checks it to be list, map or string and evaluates
-into a number value equal to the size of the argument.
+The `@` evaluates a list token and one more token and checks whether the latter
+one is present in the list. Results in a boolean value.
 
-Token `;` evaluates two next tokens. If the first one is not a NOVALUE `;` evaluates
-into this value, otherwise `;` evaluates into the 2nd value. It's meaning is the
+The `$` evaluates the next token, checks it to be list, map or string and results
+in a number value equal to the size of the argument.
+
+The `;` evaluates two next tokens. If the first one is not a NOVALUE `;` it results
+in this value, otherwise `;` results in the 2nd value. It's token meaning is the
 "default value".
 
+## Launching
 
-... TO BE CONTINUED
+The `cyvm` binary syntax is
+
+* `cyvm -c` prints the commands and their short meaning
+* `cyvm -r file.cy` runs the program in a file
+* `cyvm -t file.cy` prints the found tokens without evaluating them
+
+When running a program execution starts by evaluating the very first token. A special
+name `Args` is available in the root map and is the list of CLI arguments (including
+the .cy file name).
+
+Each token has a location in the file in the `@line.number` format. The `-t` option
+prints tokens and their location. When an error in evaluation occurs the cyvm prints
+the fauling token location and exits.
+
+## What else
+
+Memory management is absent. There's no explicit malloc/free commands, objects are
+allocated transparently and are not freed :) garbage collection, well, may come some
+day.
+
+Error handling is not there yet. In some situations (e.g. out-of-bounds list access or
+getting a missing key from the map) the result is NOVALUE, in all other cyvm just exits.
+
+Doing recursion looks clumsy, look at examples/qsort-rec.cy file's line
+
+    -> split [ split split words b ]
+
+it does the recursive call, but to make the split function call itself it pushes its
+name into the namespace it will live in.
