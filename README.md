@@ -277,7 +277,7 @@ as `<-` stopping execution of current block and evaluating it's caller into the 
 
 ### Streams
 
-Tokens: `<~ <~> -> <-> ->> <->>` to open a stream and `<< >>` to read from and
+Tokens: `<~ <~> ~> <-> ->> <->>` to open a stream and `<< >>` to read from and
 write to a stream.
 
 Opening tokens evaluate the string token and open the file by the string name.

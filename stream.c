@@ -120,7 +120,7 @@ static int eval_write(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_stream[] = {
 	{ .name = "<~",   .t = { .ts = "open r",  .eval = eval_open, .priv = (unsigned long)"r", }, },  /* RDONLY */
 	{ .name = "<~>",  .t = { .ts = "open r+", .eval = eval_open, .priv = (unsigned long)"r+", }, }, /* RDWR */
-	{ .name = "->",   .t = { .ts = "open w",  .eval = eval_open, .priv = (unsigned long)"w", }, },  /* WRONLY CREAT TRUNC */
+	{ .name = "~>",   .t = { .ts = "open w",  .eval = eval_open, .priv = (unsigned long)"w", }, },  /* WRONLY CREAT TRUNC */
 	{ .name = "<->",  .t = { .ts = "open w+", .eval = eval_open, .priv = (unsigned long)"w+", }, }, /* RDWR   CREAT TRUNC */
 	{ .name = "->>",  .t = { .ts = "open a",  .eval = eval_open, .priv = (unsigned long)"a", }, },  /* WRONLY CREAT APPEND */
 	{ .name = "<->>", .t = { .ts = "open a+", .eval = eval_open, .priv = (unsigned long)"a+", }, }, /* RDWR   CREAT APPEND */
