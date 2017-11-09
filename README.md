@@ -135,6 +135,11 @@ makes a variable named x being a number 1.
 makes a new empty map named "x", then makes an entry with the key "a" in it being
 a string with the value "string".
 
+Since all symbols live in a root map, it's possible to change this map into some
+other one. This is done with the `:` command. It evaluates a map token after it
+and sets it as root one. All the service variables mentioned above remain accessible
+and the `_:` can be used to return back to the original namespace.
+
 * Arythmetics
 
 Tokens: `+ - / * %`. Evaluate two more tokens.
@@ -232,5 +237,39 @@ may also cause the loop tokens to be evaluated.
 Tokens <code>`</code> and <code>``</code> print the next evaluated token on the
 screen. The former one accepts only strings and prints them as is, the latter one
 accepts any other token and prints it some string representation.
+
+* Command blocks
+
+Tokens `{` and `}` denote start and end of the command block, token `.` is a shortcut
+for the `{ }` pair and means a no-op block (useful for `?` and `??` commands). Tokens
+`->`, `<-` and `<?` switch between blocks.
+
+The `->` one takes command block and map tokens, sets the map as the namespace, passes
+control to the command block, then restores the namespace back. It's thus the way
+to do a function call with arguments. Using `_:` namespace makes smth like goto.
+
+The `<-` is like return or break in C. It evaluates the next token, then completes
+execution of the command block it's within and (!) makes the next token be the result
+of evaluation of whatever token caused the execution of this command block. For
+example `-> { <- 1 }` makes the first `->` be evaluated into 1. The `? _+ { <- 1 } .`
+makes `?` be evaluated into 1, since it's `?` who caused execution of the block
+with `<-`.
+
+The `<?` token is used to propagate the "return" one more code block up. It evaluates
+the next token, if it's a NOVALUE or boolean FALSE does nothing, otherwise it acts
+as `<-` stopping execution of current block and evaluating it's caller into the value.
+
+* Miscelaneous
+
+Token `@` evaluates a list token and one more token and checks whether the latter
+one is present in the list. Evaluates into a boolean value.
+
+Token `$` evaluates the next token, checks it to be list, map or string and evaluates
+into a number value equal to the size of the argument.
+
+Token `;` evaluates two next tokens. If the first one is not a NOVALUE `;` evaluates
+into this value, otherwise `;` evaluates into the 2nd value. It's meaning is the
+"default value".
+
 
 ... TO BE CONTINUED
