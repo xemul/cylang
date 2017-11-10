@@ -11,7 +11,7 @@
 	+) ret ( s )
 	? >= $ a 1 { +) ret a } .
 
-	<- ret
+	<! ret
 }
 
 ! qsort {
@@ -33,7 +33,7 @@
 		! wa wr
 	}
 
-	<- (| wa _.0
+	<! | wa { <! _.0 }
 }
 
 ! words (> Args 1
