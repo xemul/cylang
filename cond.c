@@ -202,7 +202,7 @@ static int eval_list_loop(struct cy_token *t, struct cy_file *f)
 	return 1;
 }
 
-static int eval_cond_loop(struct cy_token *t, struct cy_file *f)
+static int eval_value_loop(struct cy_token *t, struct cy_file *f)
 {
 	int ret;
 	struct cy_token ct, tb;
@@ -210,21 +210,28 @@ static int eval_cond_loop(struct cy_token *t, struct cy_file *f)
 
 	cur = f->nxt;
 again:
-	if (cy_eval_next_x(f, &ct, CY_V_BOOL) <= 0)
+	if (cy_eval_next(f, &ct) <= 0)
 		return -1;
 
 	if (get_branch(&tb, f) <= 0)
 		return -1;
 
-	if (ct.v.v_bool) {
-		ret = call_branch(&tb, f, &t->v);
+	if (!cy_empty_value(&ct.v)) {
+		struct cy_value r = {};
+
+		set_cursor(&ct.v);
+		ret = call_branch(&tb, f, &r);
 		if (ret < 0)
 			return ret;
 		if (ret != 2) {
 			f->nxt = cur;
 			goto again;
 		}
+
+		t->v = r;
 	}
+
+	set_cursor(NULL);
 
 	return 1;
 }
@@ -244,7 +251,7 @@ static struct cy_command cmd_compare[] = {
 
 	/* Loops */
 	{ .name = "~(", { .ts = "list loop", .eval = eval_list_loop, }, },
-	{ .name = "~?", { .ts = "while", .eval = eval_cond_loop, }, },
+	{ .name = "~+", { .ts = "while", .eval = eval_value_loop, }, },
 	{},
 };
 

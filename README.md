@@ -226,7 +226,7 @@ the first argument respectively starts of ends with the second one.
 Check tokens: `= != > >= < <=`. Evaluate two more tokens of the same type, compare 
 them and retuls in a boolean value.
 
-Ifs and loops tokens: `? ?? ~( ~?`. All evaluate one or more command blocks and
+Ifs and loops tokens: `? ?? ~( ~+`. All evaluate one or more command blocks and
 may pass control to them. All typically result in NOVALUE, but of the `<-` command
 is met in the command block, the if/loop token is evaluated into its argument (see
 more details further).
@@ -239,11 +239,11 @@ and considers it to consist of bool:block pairs. The first boolean token evaluat
 into true value passes control to the respective block token, then the whole ??
 evaluation stops.
 
-Loops are `~(` and `~?`. The former one evaluates a list and a command block then
+Loops are `~(` and `~+`. The former one evaluates a list and a command block then
 passes control to the block for each element from the list. To access the element
-into the block use the cursor. The latter one grabs boolean token and a evaluates
-a command block one. The block is then executed while the evaluation of the boolean
-one results in true.
+into the block use the cursor. The latter one grabs next token and a evaluates
+a command block one. The block is then executed while the evaluation of the 1st
+token given not-empty value.
 
 ### Printing
 
