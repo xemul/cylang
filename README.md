@@ -299,7 +299,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ ; |~ |:`.
+Tokens: `@ $ ; |`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -311,15 +311,15 @@ The `;` evaluates two next tokens. If the first one is not empty, the `;` result
 in this value, otherwise `;` results in the 2nd value. It's token meaning is the
 "default value".
 
-`|~` maps a list or a map. It evaluates next token and grabs one more token, then
-for each element from the 1st one evaluates the grabbed 2nd token (to refer to the 
-list element or map value use a cursor token) then puts the result into the
-resulting list or map. For maps the key to be used is inherited from the original
-map.
+`|` converts (maps or filters) a list or a map. It evaluates two next tokens and
+then for each element from the 1st (it should be a list or a map) calls the 2nd
+one (it should be a command block). If the command block returns a value (with
+it becomes a value of the result, if it just finishes -- the result is not modified.
+For maps the key to be used is inherited from the original map.
 
-`|:` filters a list (or a map). Works similarly to map, but the 2nd token should 
-result in a boolean value meaning that the respective element (a cursor) should be
-included into the resulting list or not.
+Roughly speaking convertion token is equivalent to the list loop, with the
+exception that it results in a new collection and return from the commands block
+doesn't abort the conversion.
 
 ## Launching
 
