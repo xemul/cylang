@@ -234,6 +234,25 @@ static int eval_declare(struct cy_token *t, struct cy_file *f)
 		return -1;
 	}
 
+	if (t->typ->priv) { /* swap */
+		struct cy_map_value *mv;
+
+		mv = find_in_map(&in.v_map->r, last.v_str, 0);
+		if (mv == NULL)
+			goto set;
+
+		set_cursor(&mv->v);
+		if (cy_eval_next(f, &vt) <= 0)
+			return -1;
+
+		set_cursor(NULL);
+		t->v = mv->v;
+		mv->v = vt.v;
+
+		return 1;
+	}
+
+set:
 	if (cy_eval_next(f, &vt) <= 0)
 		return -1;
 
@@ -256,6 +275,7 @@ static int eval_nsenter(struct cy_token *t, struct cy_file *f)
 
 static struct cy_command cmd_declare[] = {
 	{ .name = "!", .t = { .ts = "declare", .eval = eval_declare, }, },
+	{ .name = "!%", .t = { .ts = "swap", .eval = eval_declare, .priv = 1}, },
 	{ .name = ":", .t = { .ts = "nsenter", .eval = eval_nsenter, }, },
 };
 

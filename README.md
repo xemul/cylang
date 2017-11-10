@@ -321,6 +321,12 @@ Roughly speaking convertion token is equivalent to the list loop, with the
 exception that it results in a new collection and return from the commands block
 doesn't abort the conversion.
 
+The `!%` token is re-declare one. It works like the `!` one, but unlike it, the
+`!%` results in the old value of the symbol being declared. If th symbol didn't
+exist before, the result is NOVALUE. When evaluating the velue for the new
+symbol the cursor is available and points to the symbol's old value. E.g. the
+`! x !% y + _ 1` is equivalent to C `x = y++`.
+
 ## Launching
 
 The `cyvm` binary syntax is
