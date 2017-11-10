@@ -34,8 +34,8 @@ and it terninates at the next `#` (not at the end of line).
 Some tokens may evaluate a boolean value or a special `NOVALUE` thing.
 The latter is the default evaluation result for any token unless 
 explicitly documented. The NOVALUE, empty string, list or map and false
-boolean are called "empty value". Empty values are used in `(:`, `<!`,
-`<.` and `;` commands.
+boolean are called "empty value". Empty values are used in `(:`, `<+`,
+`<-` and `;` commands.
 
 Tokens may also result in a stream value, which represents an open
 file, pipe, socket, etc.
@@ -254,9 +254,9 @@ printed with quotes aound and new lines at the end.
 
 ### Command blocks
 
-Tokens: `{ } -> . <- <! <.`. The `{` and `}` denote start and end of the command
+Tokens: `{ } -> . <! <+ <-`. The `{` and `}` denote start and end of the command
 block, token `.` is a shortcut for the `{ }` pair and means a no-op block (useful
-as `?` and `??` sub-blocks). Tokens `->`, `<-`, `<!` and `<.` switch between 
+as `?` and `??` sub-blocks). Tokens `->`, `<!`, `<+` and `<-` switch between 
 blocks.
 
 The `->` one evaluates a command block token and a map token, sets the map as the 
@@ -264,7 +264,7 @@ namespace, passes control to the command block, then restores the namespace back
 It's thus the way to do a function call with arguments. Using `_:` namespace makes 
 smth like goto.
 
-The `<-` is like return or break in C. It evaluates the next token, then completes
+The `<!` is like return or break in C. It evaluates the next token, then completes
 execution of the current command block and (!) makes the evaluated argument be the 
 result of evaluation of the token that caused the execution of this command block.
 
@@ -272,11 +272,11 @@ E.g. the `-> { <- 1 }` makes the first `->` be evaluated into 1. The `? _+ { <- 
 makes `?` be evaluated into 1, since it's `?` that caused execution of the block
 with `<-`.
 
-The `<!` token is used to propagate the "return" one more code block up. It evaluates
-the next token, if it's an empty value the `<!` does nothing, otherwise it acts
-as `<-` stopping execution of current block and evaluating it's caller into the value.
+The `<+` token is used to propagate the "return" one more code block up. It evaluates
+the next token, if it's an empty value the `<+` does nothing, otherwise it acts
+as `<!` stopping execution of current block and evaluating it's caller into the value.
 
-The `<.` works the other way -- it stops execution of the current command block
+The `<-` works the other way -- it stops execution of the current command block
 is the argument is empty value, otherwise does nothing. The result of this
 token is always NOVALUE.
 
