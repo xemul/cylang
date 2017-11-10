@@ -186,9 +186,9 @@ results in an empty value, and results in a list of generated values.
 
 `(>`, `(<` and `(<>` cut the list and result in a new one. Evaluate one list token
 and one (or two for the `<>` one) number(s). The resulting list is cut from head, 
-tail or both respectively up to, but not including, the numbered position(s). Rule
-of a thumb is `>` results in the right (tail) part of the list and `<` results in
-the left (head) part of the list.
+tail or both respectively. Right index is included, left index is not. Rule of a
+thumb is `>` results in the right (tail) part of the list and `<` results in the
+left (head) part of the list.
 
 `+(` and `+)` are push to head and push to tail respectively. Evaluate list token 
 and one more one of any type, then add the latter value to the former list. The

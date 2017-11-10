@@ -207,10 +207,13 @@ static int eval_list_cut(struct cy_token *t, struct cy_file *f)
 	list_for_each_entry(lv, &lht.v.v_list->h, l) {
 		struct cy_list_value *nv;
 
-		if (i < from || i > to) {
+		if (i < from) {
 			i++;
 			continue;
 		}
+
+		if (i >= to)
+			break;
 
 		nv = malloc(sizeof(*lv));
 		nv->v = lv->v;
