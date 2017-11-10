@@ -227,9 +227,9 @@ Check tokens: `= != > >= < <=`. Evaluate two more tokens of the same type, compa
 them and retuls in a boolean value.
 
 Ifs and loops tokens: `? ?? ~( ~+`. All evaluate one or more command blocks and
-may pass control to them. All typically result in NOVALUE, but of the `<-` command
-is met in the command block, the if/loop token is evaluated into its argument (see
-more details further).
+may pass control to them. All typically result in NOVALUE, but if one of the
+return commands is met in the command block, the if/loop token is evaluated into
+its argument (see more details further).
 
 The `?` evaluates three tokens -- a boolean one and two command blocks. If the bool
 is true the control is passed to the first block, otherwise to the second.
