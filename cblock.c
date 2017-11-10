@@ -69,6 +69,16 @@ static int eval_cond_return(struct cy_token *t, struct cy_file *f)
 	return 2;
 }
 
+static int eval_empty_return(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token rt;
+
+	if (cy_eval_next(f, &rt) <= 0)
+		return -1;
+
+	return cy_empty_value(&rt.v) ? 2 : 1;
+}
+
 int cy_call_cblock(struct cy_token *ct, struct cy_file *f, struct cy_value *rv)
 {
 	int ret;
@@ -104,7 +114,8 @@ static struct cy_command cmd_cblock[] = {
 	{ .name = "->", .t = { .ts = "call", .eval = eval_call, }, },
 	{ .name = ".", .t = { .ts = "nop", .priv = OP_CBLOCK_NOP, }, },
 	{ .name = "<-", .t = { .ts = "return", .eval = eval_return, }, },
-	{ .name = "<?", .t = { .ts = "cond return", .eval = eval_cond_return, }, },
+	{ .name = "<!", .t = { .ts = "value return", .eval = eval_cond_return, }, },
+	{ .name = "<.", .t = { .ts = "empty return", .eval = eval_empty_return, }, },
 	{}
 };
 
