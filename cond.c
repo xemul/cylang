@@ -240,6 +240,37 @@ static int eval_cblock_loop(struct cy_token *t, struct cy_token *ct, struct cy_t
 	return 1;
 }
 
+static int eval_nuber_loop(struct cy_token *t, struct cy_token *nt, struct cy_token *bt, struct cy_file *f)
+{
+	int ret, start, stop, inc;
+	struct cy_value lc = { .t = CY_V_NUMBER, };
+	struct cy_value rv = {};
+
+	if (nt->v.v_i > 0) {
+		start = 0;
+		stop = nt->v.v_i;
+		inc = 1;
+	} else if (nt->v.v_i < 0) {
+		start = -nt->v.v_i;
+		stop = 0;
+		inc = -1;
+	} else
+		return 1;
+
+	for (lc.v_i = start; lc.v_i != stop; lc.v_i += inc) {
+		set_cursor(&lc);
+		ret = call_branch(bt, f, &rv);
+		if (ret < 0)
+			return ret;
+		if (ret == 2) {
+			t->v = rv;
+			break;
+		}
+	}
+
+	return 1;
+}
+
 static int eval_loop(struct cy_token *t, struct cy_file *f)
 {
 	struct cy_token lt, bt;
@@ -257,6 +288,8 @@ static int eval_loop(struct cy_token *t, struct cy_file *f)
 		return eval_map_loop(t, &lt, &bt, f);
 	case CY_V_CBLOCK:
 		return eval_cblock_loop(t, &lt, &bt, f);
+	case CY_V_NUMBER:
+		return eval_nuber_loop(t, &lt, &bt, f);
 	}
 
 	show_token_err(t, "Bad loop object");
