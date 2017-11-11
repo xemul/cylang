@@ -156,6 +156,7 @@ static struct cy_command cmd_misc[] = {
 	{ .name = "$", .t = { .ts = "sizeof", .eval = eval_sizeof, }, },
 	{ .name = ";=", .t = { .ts = "default value", .eval = eval_default_value, }, },
 	{ .name = ";-", .t = { .ts = "no empty", .eval = eval_no_empty, }, },
+	{}
 };
 
 void init_misc(void)

@@ -95,6 +95,7 @@ static int eval_print(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_show[] = {
 	{ .name = "``", .t = { .ts = "show", .eval = eval_show, }, },
 	{ .name = "`", .t = { .ts = "print", .eval = eval_print, }, },
+	{},
 };
 
 void init_show(void)

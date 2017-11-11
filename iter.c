@@ -80,6 +80,7 @@ static int eval_convert(struct cy_token *t, struct cy_file *f)
 
 static struct cy_command cmd_iter[] = {
 	{ .name = "||", .t = { .ts = "map/filter collection", .eval = eval_convert, }, },
+	{}
 };
 
 void init_iter(void)

@@ -277,6 +277,7 @@ static struct cy_command cmd_declare[] = {
 	{ .name = "=", .t = { .ts = "declare", .eval = eval_declare, }, },
 	{ .name = "=^", .t = { .ts = "swap", .eval = eval_declare, .priv = 1}, },
 	{ .name = "!!", .t = { .ts = "nsenter", .eval = eval_nsenter, }, },
+	{}
 };
 
 void init_declare(void)
