@@ -192,9 +192,11 @@ static int eval_map_loop(struct cy_token *t, struct cy_token *mt, struct cy_toke
 	for (n = rb_first(&mt->v.v_map->r); n != NULL; n = rb_next(n)) {
 		struct cy_map_value *mv;
 		struct cy_value rv = {};
+		struct cy_value cv = { .t = CY_V_STRING, };
 
 		mv = rb_entry(n, struct cy_map_value, n);
-		set_cursor(&mv->v);
+		cv.v_str = mv->key;
+		set_cursor(&cv);
 		ret = call_branch(bt, f, &rv);
 		if (ret < 0)
 			return ret;

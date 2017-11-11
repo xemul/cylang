@@ -239,7 +239,7 @@ evaluation stops.
 
 Loop is `~`. It evaluates the next token and grabs one more. For a list it calls
 the 2nd block for each list element. For a map it calls the block for each map
-value, for command block it calls one untill it results in NOVALUE and calls
+key, for command block it calls one until it results in NOVALUE and calls
 2nd block.
 
 ### Printing
