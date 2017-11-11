@@ -88,7 +88,7 @@ Characters `_` and `.` are special in a symbol name. If a symbol starts with a
 `_` it's one the service symbols. These are
 
 * `_` -- a cursor. This is a symbol that refers to the current element in the
-list loop, list map or list filter command (see below)
+loop, map/filter and swap commands (see below)
 
 * `_-` and `_+` -- false and true constants respectively
 
@@ -224,7 +224,7 @@ the first argument respectively starts of ends with the second one.
 Check tokens: `= != > >= < <=`. Evaluate two more tokens of the same type, compare 
 them and retuls in a boolean value.
 
-Ifs and loops tokens: `? ?? ~( ~+`. All evaluate one or more command blocks and
+Ifs and loops tokens: `? ?? ~`. All evaluate one or more command blocks and
 may pass control to them. All typically result in NOVALUE, but if one of the
 return commands is met in the command block, the if/loop token is evaluated into
 its argument (see more details further).
@@ -237,11 +237,10 @@ and considers it to consist of bool:block pairs. The first boolean token evaluat
 into true value passes control to the respective block token, then the whole ??
 evaluation stops.
 
-Loops are `~(` and `~+`. The former one evaluates a list and a command block then
-passes control to the block for each element from the list. To access the element
-into the block use the cursor. The latter one grabs next token and a evaluates
-a command block one. The block is then executed until the evaluation of the 1st
-token gives a NOVALUE.
+Loop is `~`. It evaluates the next token and grabs one more. For a list it calls
+the 2nd block for each list element. For a map it calls the block for each map
+value, for command block it calls one untill it results in NOVALUE and calls
+2nd block.
 
 ### Printing
 
@@ -309,9 +308,9 @@ The `;=` evaluates two next tokens. If the first one is NOVALUE, the it results
 in the 2nd value, otherwise `;` results in the 1st value. It's token meaning is
 the "default value".
 
-The `;-` evaluates next token and if it's empty, i.e. a NOVALUE, false bool,
-empty string, list or map, results in NOVALUE, otherwise results in the mentioned
-token.
+The `;-` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVALUE
+itself or false bool, zero number, empty string, list or map. Otherwise results
+in the mentioned token value. The token's meaning is "novalue if empty".
 
 `|` converts (maps or filters) a list or a map. It evaluates two next tokens and
 then for each element from the 1st (it should be a list or a map) calls the 2nd

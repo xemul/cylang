@@ -155,28 +155,28 @@ static int eval_select(struct cy_token *t, struct cy_file *f)
 	return cy_call_sblock(&sbt, f, &t->v);
 }
 
-static int eval_list_loop(struct cy_token *t, struct cy_file *f)
+static int eval_list_loop(struct cy_token *t, struct cy_token *lt, struct cy_token *bt, struct cy_file *f)
 {
 	int ret;
-	struct cy_token lt, bt;
 	struct cy_list_value *lv;
 
-	if (cy_eval_next_x(f, &lt, CY_V_LIST) <= 0)
-		return -1;
+	list_for_each_entry(lv, &lt->v.v_list->h, l) {
+		struct cy_value rv = {};
 
-	if (get_branch(&bt, f) <= 0)
-		return -1;
-
-	list_for_each_entry(lv, &lt.v.v_list->h, l) {
 		set_cursor(&lv->v);
-		ret = call_branch(&bt, f, &t->v);
+		ret = call_branch(bt, f, &rv);
 		if (ret < 0)
 			return ret;
+
+		if (ret == 2) {
+			t->v = rv;
+			break;
+		}
 
 		/* XXX if someone removes an element from the list while
 		 * we iterate it :(
 		 */
-		if (ret == 2 || list_empty(&lv->l))
+		if (list_empty(&lv->l))
 			break;
 	}
 	set_cursor(NULL);
@@ -184,38 +184,81 @@ static int eval_list_loop(struct cy_token *t, struct cy_file *f)
 	return 1;
 }
 
-static int eval_value_loop(struct cy_token *t, struct cy_file *f)
+static int eval_map_loop(struct cy_token *t, struct cy_token *mt, struct cy_token *bt, struct cy_file *f)
 {
 	int ret;
-	struct cy_token ct, tb;
-	struct cy_ctoken *cur;
+	struct rb_node *n;
 
-	cur = f->nxt;
-again:
-	if (cy_eval_next(f, &ct) <= 0)
-		return -1;
+	for (n = rb_first(&mt->v.v_map->r); n != NULL; n = rb_next(n)) {
+		struct cy_map_value *mv;
+		struct cy_value rv = {};
 
-	if (get_branch(&tb, f) <= 0)
-		return -1;
-
-	if (ct.v.t != CY_V_NOVALUE) {
-		struct cy_value r = {};
-
-		set_cursor(&ct.v);
-		ret = call_branch(&tb, f, &r);
+		mv = rb_entry(n, struct cy_map_value, n);
+		set_cursor(&mv->v);
+		ret = call_branch(bt, f, &rv);
 		if (ret < 0)
 			return ret;
-		if (ret != 2) {
-			f->nxt = cur;
-			goto again;
+
+		if (ret == 2) {
+			t->v = rv;
+			break;
 		}
-
-		t->v = r;
 	}
-
 	set_cursor(NULL);
 
 	return 1;
+}
+
+static int eval_cblock_loop(struct cy_token *t, struct cy_token *ct, struct cy_token *bt, struct cy_file *f)
+{
+	int ret;
+
+	while (1) {
+		struct cy_value rv = {};
+
+		ret = cy_call_cblock(ct, f, &rv);
+		if (ret <= 0)
+			return -1;
+
+		if (ret != 2 || rv.t == CY_V_NOVALUE)
+			break;
+
+		set_cursor(&rv);
+		ret = call_branch(bt, f, &rv);
+		if (ret < 0)
+			return ret;
+
+		if (ret == 2) {
+			t->v = rv;
+			break;
+		}
+	}
+	set_cursor(NULL);
+
+	return 1;
+}
+
+static int eval_loop(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token lt, bt;
+
+	if (cy_eval_next(f, &lt) <= 0)
+		return -1;
+
+	if (get_branch(&bt, f) <= 0)
+		return -1;
+
+	switch (lt.v.t) {
+	case CY_V_LIST:
+		return eval_list_loop(t, &lt, &bt, f);
+	case CY_V_MAP:
+		return eval_map_loop(t, &lt, &bt, f);
+	case CY_V_CBLOCK:
+		return eval_cblock_loop(t, &lt, &bt, f);
+	}
+
+	show_token_err(t, "Bad loop object");
+	return -1;
 }
 
 static struct cy_command cmd_compare[] = {
@@ -232,8 +275,7 @@ static struct cy_command cmd_compare[] = {
 	{ .name = "??", { .ts = "select", .eval = eval_select, }, },
 
 	/* Loops */
-	{ .name = "~(", { .ts = "list loop", .eval = eval_list_loop, }, },
-	{ .name = "~+", { .ts = "while", .eval = eval_value_loop, }, },
+	{ .name = "~",  { .ts = "loop", .eval = eval_loop, }, },
 	{},
 };
 

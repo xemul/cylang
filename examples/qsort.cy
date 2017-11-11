@@ -2,7 +2,7 @@
 	! a ( )
 	! b ( )
 	! s words.0
-	~( (> words 1 {
+	~ (> words 1 {
 		? > _ s { +) a _ } { +) b _ }
 	}
 
@@ -17,10 +17,10 @@
 ! qsort {
 	! wa ( words )
 	! more _+
-	~+ ;- more {
+	~ { <! ;- more } {
 		! wr ( )
 		! more _-
-		~( wa {
+		~ wa {
 			! words _
 			? > $ words 1 {
 				! wr + wr -> sep _:
@@ -37,4 +37,4 @@
 }
 
 ! words (> Args 1
-~( -> qsort _: { ` _ }
+~ -> qsort _: { ` _ }
