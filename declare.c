@@ -143,7 +143,7 @@ int try_resolve_symbol(struct cy_token *t)
 			return 1;
 		}
 
-		if (val[1] == ':' && val[2] == '\0') {
+		if (val[1] == '_' && val[2] == '\0') {
 			t->typ = &cy_curns;
 			return 1;
 		}
@@ -274,9 +274,9 @@ static int eval_nsenter(struct cy_token *t, struct cy_file *f)
 }
 
 static struct cy_command cmd_declare[] = {
-	{ .name = "!", .t = { .ts = "declare", .eval = eval_declare, }, },
-	{ .name = "!%", .t = { .ts = "swap", .eval = eval_declare, .priv = 1}, },
-	{ .name = ":", .t = { .ts = "nsenter", .eval = eval_nsenter, }, },
+	{ .name = "=", .t = { .ts = "declare", .eval = eval_declare, }, },
+	{ .name = "=^", .t = { .ts = "swap", .eval = eval_declare, .priv = 1}, },
+	{ .name = "!!", .t = { .ts = "nsenter", .eval = eval_nsenter, }, },
 };
 
 void init_declare(void)

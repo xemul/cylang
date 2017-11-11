@@ -94,7 +94,7 @@ loop, map/filter and swap commands (see below)
 
 * `_?` -- a random number (unlimited, use the mod operation to trim it)
 
-* `_:` -- current namespace (see below)
+* `__` -- current namespace (see below)
 
 * `_<`, `_>` and `_>!` -- stdin, stdout and stderr streams respectively
 
@@ -148,9 +148,9 @@ makes a new empty map named "x", then makes an entry with the key "a" in it bein
 a string with the value "string".
 
 Since all symbols start from the root map, it's possible to change this map into some
-other map. This is done with the `:` command. It evaluates the next map token and
+other map. This is done with the `!!` command. It evaluates the next map token and
 sets it as the root one. All the service variables mentioned above remain accessible
-in any map, the `_:` can be used to return back to the original namespace.
+in any map, the `__` can be used to return back to the original namespace.
 
 ### Arythmetics
 
@@ -237,7 +237,7 @@ and considers it to consist of bool:block pairs. The first boolean token evaluat
 into true value passes control to the respective block token, then the whole ??
 evaluation stops.
 
-Loop is `~`. It evaluates the next token and grabs one more. For a list it calls
+Loop is `~~`. It evaluates the next token and grabs one more. For a list it calls
 the 2nd block for each list element. For a map it calls the block for each map
 key, for command block it calls one until it results in NOVALUE and calls
 2nd block.
@@ -251,29 +251,29 @@ printed with quotes aound and new lines at the end.
 
 ### Command blocks
 
-Tokens: `{ } -> . <! <+ <-`. The `{` and `}` denote start and end of the command
+Tokens: `{ } . :: := :+ :-`. The `{` and `}` denote start and end of the command
 block, token `.` is a shortcut for the `{ }` pair and means a no-op block (useful
-as `?` and `??` sub-blocks). Tokens `->`, `<!`, `<+` and `<-` switch between 
+as `?` and `??` sub-blocks). Tokens `::`, `:=`, `:+` and `:-` switch between 
 blocks.
 
-The `->` one evaluates a command block token and a map token, sets the map as the 
+The `::` one evaluates a command block token and a map token, sets the map as the 
 namespace, passes control to the command block, then restores the namespace back. 
-It's thus the way to do a function call with arguments. Using `_:` namespace makes 
+It's thus the way to do a function call with arguments. Using `__` namespace makes 
 smth like goto.
 
-The `<!` is like return or break in C. It evaluates the next token, then completes
+The `:=` is like return or break in C. It evaluates the next token, then completes
 execution of the current command block and (!) makes the evaluated argument be the 
 result of evaluation of the token that caused the execution of this command block.
 
-E.g. the `-> { <- 1 }` makes the first `->` be evaluated into 1. The `? _+ { <- 1 } .`
+E.g. the `:: { := 1 }` makes the first `::` be evaluated into 1. The `? _+ { := 1 } .`
 makes `?` be evaluated into 1, since it's `?` that caused execution of the block
-with `<-`.
+with `:=`.
 
-The `<+` token is used to propagate the "return" one more code block up. It evaluates
-the next token, if it's a NOVALUE then the `<+` does nothing, otherwise it acts
-as `<!` stopping execution of current block and evaluating it's caller into the value.
+The `:+` token is used to propagate the "return" one more code block up. It evaluates
+the next token, if it's a NOVALUE then the `:+` does nothing, otherwise it acts
+as `:=` stopping execution of current block and evaluating it's caller into the value.
 
-The `<-` works the other way -- it stops execution of the current command block
+The `:-` works the other way -- it stops execution of the current command block
 is the argument is NOVALUE, otherwise does nothing. The result of this token is
 always NOVALUE.
 
@@ -296,7 +296,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ ;= ;- |`.
+Tokens: `@ $ ;= ;- ||`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -312,7 +312,7 @@ The `;-` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVAL
 itself or false bool, zero number, empty string, list or map. Otherwise results
 in the mentioned token value. The token's meaning is "novalue if empty".
 
-`|` converts (maps or filters) a list or a map. It evaluates two next tokens and
+`||` converts (maps or filters) a list or a map. It evaluates two next tokens and
 then for each element from the 1st (it should be a list or a map) calls the 2nd
 one (it should be a command block). If the command block returns a value (with
 it becomes a value of the result, if it just finishes -- the result is not modified.

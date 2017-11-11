@@ -64,6 +64,7 @@ static void add_command(struct cy_command *cmd)
 	hv = strhash(cmd->name) & CY_CMD_HASH_MASK;
 	cmd->n = cmd_hash[hv];
 	cmd_hash[hv] = cmd;
+	cmd->l = NULL;
 
 	*last = cmd;
 	last = &cmd->l;
@@ -88,8 +89,8 @@ void init_resolver(void)
 	init_cblocks();
 	init_cond();
 	init_misc();
-	init_stream();
 	init_iter();
+	init_stream();
 }
 
 void show_commands(void)

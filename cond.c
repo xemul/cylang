@@ -298,7 +298,7 @@ static int eval_loop(struct cy_token *t, struct cy_file *f)
 
 static struct cy_command cmd_compare[] = {
 	/* Checks */
-	{ .name = "=",  { .ts = "eq", .eval = eval_compare, .priv = OP_EQ, }, },
+	{ .name = "==",  { .ts = "eq", .eval = eval_compare, .priv = OP_EQ, }, },
 	{ .name = "!=", { .ts = "ne", .eval = eval_compare, .priv = OP_NE, }, },
 	{ .name = ">",  { .ts = "gt", .eval = eval_compare, .priv = OP_GT, }, },
 	{ .name = ">=", { .ts = "ge", .eval = eval_compare, .priv = OP_GE, }, },
@@ -310,7 +310,7 @@ static struct cy_command cmd_compare[] = {
 	{ .name = "??", { .ts = "select", .eval = eval_select, }, },
 
 	/* Loops */
-	{ .name = "~",  { .ts = "loop", .eval = eval_loop, }, },
+	{ .name = "~~",  { .ts = "loop", .eval = eval_loop, }, },
 	{},
 };
 
