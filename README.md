@@ -358,3 +358,18 @@ Doing recursion looks clumsy, look at examples/qsort-rec.cy file's line
 
 it does the recursive call, but to make the split function call itself it pushes its
 name into the namespace it will live in.
+
+## Command names
+
+Current set of commands is subject to change. The plan is to make some symbol reflect
+the command type. E.g.
+
+* `?` for conditional ops (if, select)
+* `~` for loops of all kinds
+* `(` and `)` for lists
+* `[` and `]` for maps
+* `{` and `}` for command blocks
+* `%` for strings
+* `!` for errors (not there yet) (now used for declare)
+* `<` and `>` for streams
+* math and bool are very common and shouldn't change
