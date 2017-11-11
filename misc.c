@@ -114,10 +114,37 @@ static int eval_default_value(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &b) <= 0)
 		return -1;
 
-	if (!cy_empty_value(&a.v))
-		t->v = a.v;
-	else
-		t->v = b.v;
+	t->v = (a.v.t != CY_V_NOVALUE ? a.v : b.v);
+	return 1;
+}
+
+static bool is_empty_value(struct cy_value *v)
+{
+	switch (v->t) {
+	case CY_V_NOVALUE:
+		return true;
+	case CY_V_BOOL:
+		return !v->v_bool;
+	case CY_V_LIST:
+		return list_empty(&v->v_list->h);
+	case CY_V_MAP:
+		return RB_EMPTY_ROOT(&v->v_map->r);
+	case CY_V_STRING:
+		return v->v_str[0] == '\0';
+	}
+
+	return false;
+}
+
+static int eval_no_empty(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token vt;
+
+	if (cy_eval_next(f, &vt) <= 0)
+		return -1;
+
+	if (!is_empty_value(&vt.v))
+		t->v = vt.v;
 
 	return 1;
 }
@@ -125,7 +152,8 @@ static int eval_default_value(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_misc[] = {
 	{ .name = "@",  { .ts = "in", .eval = eval_in, }, },
 	{ .name = "$", .t = { .ts = "sizeof", .eval = eval_sizeof, }, },
-	{ .name = ";", .t = { .ts = "default value", .eval = eval_default_value, }, },
+	{ .name = ";=", .t = { .ts = "default value", .eval = eval_default_value, }, },
+	{ .name = ";-", .t = { .ts = "no empty", .eval = eval_no_empty, }, },
 };
 
 void init_misc(void)

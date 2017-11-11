@@ -33,9 +33,7 @@ and it terninates at the next `#` (not at the end of line).
 
 Some tokens may evaluate a boolean value or a special `NOVALUE` thing.
 The latter is the default evaluation result for any token unless 
-explicitly documented. The NOVALUE, empty string, list or map and false
-boolean are called "empty value". Empty values are used in `(:`, `<+`,
-`<-` and `;` commands.
+explicitly documented.
 
 Tokens may also result in a stream value, which represents an open
 file, pipe, socket, etc.
@@ -182,7 +180,7 @@ start and end respectively. Other tokens typically need at least one more
 list token.
 
 `(:` generates a new list. It continuously evaluates the next token until it
-results in an empty value, and results in a list of generated values.
+results in a NOVALUE, and results in a list of generated values.
 
 `(>`, `(<` and `(<>` cut the list and result in a new one. Evaluate one list token
 and one (or two for the `<>` one) number(s). The resulting list is cut from head, 
@@ -242,8 +240,8 @@ evaluation stops.
 Loops are `~(` and `~+`. The former one evaluates a list and a command block then
 passes control to the block for each element from the list. To access the element
 into the block use the cursor. The latter one grabs next token and a evaluates
-a command block one. The block is then executed while the evaluation of the 1st
-token given not-empty value.
+a command block one. The block is then executed until the evaluation of the 1st
+token gives a NOVALUE.
 
 ### Printing
 
@@ -273,12 +271,12 @@ makes `?` be evaluated into 1, since it's `?` that caused execution of the block
 with `<-`.
 
 The `<+` token is used to propagate the "return" one more code block up. It evaluates
-the next token, if it's an empty value the `<+` does nothing, otherwise it acts
+the next token, if it's a NOVALUE then the `<+` does nothing, otherwise it acts
 as `<!` stopping execution of current block and evaluating it's caller into the value.
 
 The `<-` works the other way -- it stops execution of the current command block
-is the argument is empty value, otherwise does nothing. The result of this
-token is always NOVALUE.
+is the argument is NOVALUE, otherwise does nothing. The result of this token is
+always NOVALUE.
 
 ### Streams
 
@@ -299,7 +297,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ ; |`.
+Tokens: `@ $ ;= ;- |`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -307,9 +305,13 @@ one is present in the list. Results in a boolean value.
 The `$` evaluates the next token, checks it to be list, map or string and results
 in a number value equal to the size of the argument.
 
-The `;` evaluates two next tokens. If the first one is not empty, the `;` results
-in this value, otherwise `;` results in the 2nd value. It's token meaning is the
-"default value".
+The `;=` evaluates two next tokens. If the first one is NOVALUE, the it results
+in the 2nd value, otherwise `;` results in the 1st value. It's token meaning is
+the "default value".
+
+The `;-` evaluates next token and if it's empty, i.e. a NOVALUE, false bool,
+empty string, list or map, results in NOVALUE, otherwise results in the mentioned
+token.
 
 `|` converts (maps or filters) a list or a map. It evaluates two next tokens and
 then for each element from the 1st (it should be a list or a map) calls the 2nd

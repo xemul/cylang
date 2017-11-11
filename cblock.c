@@ -62,7 +62,7 @@ static int eval_value_return(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &rt) <= 0)
 		return -1;
 
-	if (cy_empty_value(&rt.v))
+	if (rt.v.t == CY_V_NOVALUE)
 		return 1;
 
 	t->v = rt.v;
@@ -76,7 +76,7 @@ static int eval_empty_return(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &rt) <= 0)
 		return -1;
 
-	return cy_empty_value(&rt.v) ? 2 : 1;
+	return rt.v.t == CY_V_NOVALUE ? 2 : 1;
 }
 
 int cy_call_cblock(struct cy_token *ct, struct cy_file *f, struct cy_value *rv)

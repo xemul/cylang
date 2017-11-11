@@ -156,7 +156,7 @@ again:
 	if (cy_eval_next(f, &gt) <= 0)
 		return -1;
 
-	if (!cy_empty_value(&gt.v)) {
+	if (gt.v.t != CY_V_NOVALUE) {
 		f->nxt = cur;
 		lv = malloc(sizeof(*lv));
 		lv->v = gt.v;
