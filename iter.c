@@ -60,6 +60,43 @@ static int convert_map(struct cy_token *t, struct cy_token *mt, struct cy_token 
 	return 1;
 }
 
+static int convert_cblock(struct cy_token *t, struct cy_token *gt, struct cy_token *bt, struct cy_file *f)
+{
+	int ret;
+
+	t->v.t = CY_V_LIST;
+	t->v.v_list = malloc(sizeof(struct list_head));
+	INIT_LIST_HEAD(&t->v.v_list->h);
+
+	while (1) {
+		struct cy_value rv = {};
+
+		ret = cy_call_cblock(gt, f, &rv);
+		if (ret <= 0)
+			return ret;
+
+		if (ret != 2 || rv.t == CY_V_NOVALUE)
+			break;
+
+		set_cursor(&rv);
+		ret = cy_call_cblock(bt, f, &rv);
+		if (ret <= 0)
+			return -1;
+
+		if (ret == 2) {
+			struct cy_list_value *nv;
+
+			nv = malloc(sizeof(*nv));
+			nv->v = rv;
+			list_add_tail(&nv->l, &t->v.v_list->h);
+		}
+	}
+
+	set_cursor(NULL);
+
+	return 1;
+}
+
 static int eval_convert(struct cy_token *t, struct cy_file *f)
 {
 	struct cy_token st, bt;
@@ -69,10 +106,14 @@ static int eval_convert(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next_x(f, &bt, CY_V_CBLOCK) <= 0)
 		return -1;
 
-	if (st.v.t == CY_V_LIST)
+	switch (st.v.t) {
+	case CY_V_LIST:
 		return convert_list(t, &st, &bt, f);
-	if (st.v.t == CY_V_MAP)
+	case CY_V_MAP:
 		return convert_map(t, &st, &bt, f);
+	case CY_V_CBLOCK:
+		return convert_cblock(t, &st, &bt, f);
+	}
 
 	show_token_err(t, "Bad object %s to map", vtype2s(st.v.t));
 	return -1;

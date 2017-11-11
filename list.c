@@ -141,32 +141,6 @@ static int eval_list(struct cy_token *t, struct cy_file *f)
 	}
 }
 
-static int eval_list_gen(struct cy_token *t, struct cy_file *f)
-{
-	struct cy_token gt;
-	struct cy_list_value *lv;
-	struct cy_ctoken *cur;
-
-	t->v.t = CY_V_LIST;
-	t->v.v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&t->v.v_list->h);
-
-	cur = f->nxt;
-again:
-	if (cy_eval_next(f, &gt) <= 0)
-		return -1;
-
-	if (gt.v.t != CY_V_NOVALUE) {
-		f->nxt = cur;
-		lv = malloc(sizeof(*lv));
-		lv->v = gt.v;
-		list_add_tail(&lv->l, &t->v.v_list->h);
-		goto again;
-	}
-
-	return 1;
-}
-
 #define OP_CUT_HEAD	1
 #define OP_CUT_TAIL	2
 #define OP_CUT_BOTH	3
@@ -277,7 +251,6 @@ static int eval_list_pop(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_list[] = {
 	{ .name = "(", .t = { .ts = "list start", .eval = eval_list, }, },
 	{ .name = ")", .t = { .ts = "list end", .eval = eval_list_end, }, },
-	{ .name = "(:", .t = { .ts = "list gen", .eval = eval_list_gen, }, },
 
 	{ .name = "(<", .t = { .ts = "list head", .eval = eval_list_cut, .priv = OP_CUT_TAIL, }, },
 	{ .name = "(>", .t = { .ts = "list tail", .eval = eval_list_cut, .priv = OP_CUT_HEAD, }, },

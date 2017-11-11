@@ -175,12 +175,9 @@ it's not like && and || in C.
 
 ### Lists
 
-Tokens: `( ) (: (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
+Tokens: `( ) (< (> (<> +( +) -( -)`. Tokens `(` and `)` mark the list
 start and end respectively. Other tokens typically need at least one more 
 list token.
-
-`(:` generates a new list. It continuously evaluates the next token until it
-results in a NOVALUE, and results in a list of generated values.
 
 `(>`, `(<` and `(<>` cut the list and result in a new one. Evaluate one list token
 and one (or two for the `<>` one) number(s). The resulting list is cut from head, 
@@ -314,11 +311,14 @@ The `;-` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVAL
 itself or false bool, zero number, empty string, list or map. Otherwise results
 in the mentioned token value. The token's meaning is "novalue if empty".
 
-`||` converts (maps or filters) a list or a map. It evaluates two next tokens and
-then for each element from the 1st (it should be a list or a map) calls the 2nd
-one (it should be a command block). If the command block returns a value (with
+`||` converts (maps or filters) a list, a map or a command block. It evaluates
+two next tokens and then for each element from the 1st (it should be a list, a
+map or a command block, that gets called untill it results in NOVALUE) calls the
+2nd one (it should be a command block). If the command block returns a value (with
 it becomes a value of the result, if it just finishes -- the result is not modified.
-For maps the key to be used is inherited from the original map.
+For maps the key to be used is inherited from the original map. Mapping a
+command block results in a list of generated (and mapped/filtered with the 2nd
+block) values and is the way to generate a list.
 
 Roughly speaking convertion token is equivalent to the list loop, with the
 exception that it results in a new collection and return from the commands block
