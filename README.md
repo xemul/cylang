@@ -168,7 +168,7 @@ comes up.
 
 ### Boolean
 
-Tokens: `& | ^ ~`. All but `~` need two more boolean tokens, `~` needs one.
+Tokens: `& | ^ !`. All but `!` need two more boolean tokens, `!` needs one.
 Do what they are expected to and result in a boolean value. Note, that for
 `&` and `|` both argument tokens ARE evaluated before doing the operation,
 it's not like && and || in C.
@@ -239,7 +239,7 @@ In the select case the evaluated argument is considered to consist of bool:block
 pairs. The first boolean token evaluated into true value passes control to the
 respective block token, then the whole `?` evaluation stops.
 
-Loop is `~~`. It evaluates the next token and grabs one more. For a list it calls
+Loop is `~`. It evaluates the next token and grabs one more. For a list it calls
 the 2nd block for each list element. For a map it calls the block for each map
 key, for command block it calls one until it results in NOVALUE and calls
 2nd block.

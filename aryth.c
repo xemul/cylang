@@ -176,7 +176,7 @@ static struct cy_command cmd_aryth[] = {
 	{ .name = "&", .t = { .ts = "and", .eval = eval_bool_op, .priv = OP_AND, }, },
 	{ .name = "|", .t = { .ts = "or",  .eval = eval_bool_op, .priv = OP_OR, }, },
 	{ .name = "^", .t = { .ts = "xor", .eval = eval_bool_op, .priv = OP_XOR, }, },
-	{ .name = "~", .t = { .ts = "not", .eval = eval_bool_not, }, },
+	{ .name = "!", .t = { .ts = "not", .eval = eval_bool_not, }, },
 	{},
 };
 
