@@ -224,18 +224,20 @@ the first argument respectively starts of ends with the second one.
 Check tokens: `= != > >= < <=`. Evaluate two more tokens of the same type, compare 
 them and retuls in a boolean value.
 
-Ifs and loops tokens: `? ?? ~`. All evaluate one or more command blocks and
+Ifs and loops tokens: `? ~`. All evaluate one or more command blocks and
 may pass control to them. All typically result in NOVALUE, but if one of the
 return commands is met in the command block, the if/loop token is evaluated into
 its argument (see more details further).
 
-The `?` evaluates three tokens -- a boolean one and two command blocks. If the bool
-is true the control is passed to the first block, otherwise to the second.
+The `?` evaluates next token. If it's a boolean value, then it's an if case,
+if it's a command block, then it's a select case.
 
-The `??` token is the multiple choice token. It evaluates one command block token
-and considers it to consist of bool:block pairs. The first boolean token evaluated
-into true value passes control to the respective block token, then the whole ??
-evaluation stops.
+In if case two more commabd block tokens are evaluated for then and else branches
+respectively. One if them is then called depending on the 1st token value.
+
+In the select case the evaluated argument is considered to consist of bool:block
+pairs. The first boolean token evaluated into true value passes control to the
+respective block token, then the whole `?` evaluation stops.
 
 Loop is `~~`. It evaluates the next token and grabs one more. For a list it calls
 the 2nd block for each list element. For a map it calls the block for each map

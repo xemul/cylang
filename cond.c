@@ -83,13 +83,10 @@ static int call_branch(struct cy_token *t, struct cy_file *f, struct cy_value *r
 		return cy_call_cblock(t, f, rv);
 }
 
-static int eval_if(struct cy_token *t, struct cy_file *f)
+static int eval_if(struct cy_token *t, struct cy_token *t_cond, struct cy_file *f)
 {
 	int ret;
-	struct cy_token t_cond, t_then, t_else;
-
-	if (cy_eval_next_x(f, &t_cond, CY_V_BOOL) <= 0)
-		return -1;
+	struct cy_token t_then, t_else;
 
 	if (get_branch(&t_then, f) <= 0)
 		return -1;
@@ -97,7 +94,7 @@ static int eval_if(struct cy_token *t, struct cy_file *f)
 	if (get_branch(&t_else, f) <= 0)
 		return -1;
 
-	if (t_cond.v.v_bool)
+	if (t_cond->v.v_bool)
 		ret = call_branch(&t_then, f, &t->v);
 	else
 		ret = call_branch(&t_else, f, &t->v);
@@ -145,14 +142,25 @@ static int cy_call_sblock(struct cy_token *ct, struct cy_file *f, struct cy_valu
 	return 1;
 }
 
-static int eval_select(struct cy_token *t, struct cy_file *f)
+static int eval_select(struct cy_token *t, struct cy_token *sbt, struct cy_file *f)
 {
-	struct cy_token sbt;
+	return cy_call_sblock(sbt, f, &t->v);
+}
 
-	if (cy_eval_next_x(f, &sbt, CY_V_CBLOCK) <= 0)
+static int eval_cond(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token tn;
+
+	if (cy_eval_next(f, &tn) <= 0)
 		return -1;
 
-	return cy_call_sblock(&sbt, f, &t->v);
+	if (tn.v.t == CY_V_BOOL)
+		return eval_if(t, &tn, f);
+	if (tn.v.t == CY_V_CBLOCK)
+		return eval_select(t, &tn, f);
+
+	show_token_err(t, "Bad argument for condition");
+	return -1;
 }
 
 static int eval_list_loop(struct cy_token *t, struct cy_token *lt, struct cy_token *bt, struct cy_file *f)
@@ -306,8 +314,7 @@ static struct cy_command cmd_compare[] = {
 	{ .name = "<=", { .ts = "le", .eval = eval_compare, .priv = OP_LE, }, },
 
 	/* If-s */
-	{ .name = "?",  { .ts = "if", .eval = eval_if, }, },
-	{ .name = "??", { .ts = "select", .eval = eval_select, }, },
+	{ .name = "?",  { .ts = "condition", .eval = eval_cond, }, },
 
 	/* Loops */
 	{ .name = "~~",  { .ts = "loop", .eval = eval_loop, }, },
