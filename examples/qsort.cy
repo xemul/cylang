@@ -1,40 +1,40 @@
-! sep {
-	! a ( )
-	! b ( )
-	! s words.0
+= sep {
+	= a ( )
+	= b ( )
+	= s words.0
 	~ (> words 1 {
 		? > _ s { +) a _ } { +) b _ }
 	}
 
-	! ret ( )
+	= ret ( )
 	? >= $ b 1 { +) ret b } .
 	+) ret ( s )
 	? >= $ a 1 { +) ret a } .
 
-	<! ret
+	:= ret
 }
 
-! qsort {
-	! wa ( words )
-	! more _+
-	~ { <! ;- more } {
-		! wr ( )
-		! more _-
+= qsort {
+	= wa ( words )
+	= more _+
+	~ { := ;- more } {
+		= wr ( )
+		= more _-
 		~ wa {
-			! words _
+			= words _
 			? > $ words 1 {
-				! wr + wr -> sep _:
-				! more _+
+				= wr + wr :: sep __
+				= more _+
 			} {
 				+) wr words
 			}
 		}
 
-		! wa wr
+		= wa wr
 	}
 
-	<! | wa { <! _.0 }
+	= ret ( ) ~ wa { +) ret _.0 } := ret
 }
 
-! words (> Args 1
-~ -> qsort _: { ` _ }
+= words (> Args 1
+~ :: qsort __ { ` _ }
