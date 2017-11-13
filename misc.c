@@ -138,7 +138,7 @@ static bool is_empty_value(struct cy_value *v)
 	return false;
 }
 
-static int eval_no_empty(struct cy_token *t, struct cy_file *f)
+static int eval_empty_is_novalue(struct cy_token *t, struct cy_file *f)
 {
 	struct cy_token vt;
 
@@ -154,8 +154,9 @@ static int eval_no_empty(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_misc[] = {
 	{ .name = "@",  { .ts = "in", .eval = eval_in, }, },
 	{ .name = "$", .t = { .ts = "sizeof", .eval = eval_sizeof, }, },
-	{ .name = ";=", .t = { .ts = "default value", .eval = eval_default_value, }, },
-	{ .name = ";-", .t = { .ts = "no empty", .eval = eval_no_empty, }, },
+
+	{ .name = ".|", .t = { .ts = "default value", .eval = eval_default_value, }, },
+	{ .name = "-.", .t = { .ts = "no empty", .eval = eval_empty_is_novalue, }, },
 	{}
 };
 

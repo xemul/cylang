@@ -304,6 +304,18 @@ static int eval_loop(struct cy_token *t, struct cy_file *f)
 	return -1;
 }
 
+static int eval_is_novalue(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token nt;
+
+	if (cy_eval_next(f, &nt) <= 0)
+		return -1;
+
+	t->v.t = CY_V_BOOL;
+	t->v.v_bool = (nt.v.t == CY_V_NOVALUE);
+	return 1;
+}
+
 static struct cy_command cmd_compare[] = {
 	/* Checks */
 	{ .name = "==", { .ts = "eq", .eval = eval_compare, .priv = OP_EQ, }, },
@@ -312,6 +324,7 @@ static struct cy_command cmd_compare[] = {
 	{ .name = ">=", { .ts = "ge", .eval = eval_compare, .priv = OP_GE, }, },
 	{ .name = "<",  { .ts = "lt", .eval = eval_compare, .priv = OP_LT, }, },
 	{ .name = "<=", { .ts = "le", .eval = eval_compare, .priv = OP_LE, }, },
+	{ .name = ".=", .t = { .ts = "is novalue", .eval = eval_is_novalue, }, },
 
 	/* If-s */
 	{ .name = "?",  { .ts = "condition", .eval = eval_cond, }, },

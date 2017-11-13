@@ -17,7 +17,7 @@
 = qsort {
 	= wa ( words )
 	= more _+
-	~ { := ;- more } {
+	~ { := -. more } {
 		= wr ( )
 		= more _-
 		~ wa {

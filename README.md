@@ -295,7 +295,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ ;= ;- =^`.
+Tokens: `@ $ .| -. .= =^`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -303,13 +303,16 @@ one is present in the list. Results in a boolean value.
 The `$` evaluates the next token, checks it to be list, map or string and results
 in a number value equal to the size of the argument.
 
-The `;=` evaluates two next tokens. If the first one is NOVALUE, the it results
-in the 2nd value, otherwise `;` results in the 1st value. It's token meaning is
+The `.|` evaluates two next tokens. If the first one is NOVALUE, the it results
+in the 2nd value, otherwise results in the 1st value. It's token meaning is
 the "default value".
 
-The `;-` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVALUE
+The `-.` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVALUE
 itself or false bool, zero number, empty string, list or map. Otherwise results
 in the mentioned token value. The token's meaning is "novalue if empty".
+
+The `.=` token evaluates the next value and results in true if it's NOVALUE or
+false otherwise.
 
 The `=^` token is re-declare one. It works like the `=` one, but unlike it, the
 `=^` results in the old value of the symbol being declared. If th symbol didn't

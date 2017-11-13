@@ -69,7 +69,7 @@ static int eval_value_return(struct cy_token *t, struct cy_file *f)
 	return 2;
 }
 
-static int eval_empty_return(struct cy_token *t, struct cy_file *f)
+static int eval_novalue_return(struct cy_token *t, struct cy_file *f)
 {
 	struct cy_token rt;
 
@@ -112,10 +112,11 @@ static struct cy_command cmd_cblock[] = {
 	{ .name = ".", .t = { .ts = "nop", .priv = OP_CBLOCK_NOP, }, },
 	{ .name = "{", .t = { .ts = "cblock start", .priv = OP_CBLOCK, }, },
 	{ .name = "}", .t = { .ts = "cblock end", .eval = eval_cblock_end, .priv = OP_CBLOCK_END, }, },
+
 	{ .name = "::", .t = { .ts = "call", .eval = eval_call, }, },
 	{ .name = ":=", .t = { .ts = "return", .eval = eval_return, }, },
 	{ .name = ":+", .t = { .ts = "value return", .eval = eval_value_return, }, },
-	{ .name = ":-", .t = { .ts = "empty return", .eval = eval_empty_return, }, },
+	{ .name = ":-", .t = { .ts = "empty return", .eval = eval_novalue_return, }, },
 	{}
 };
 
