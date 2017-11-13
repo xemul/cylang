@@ -151,7 +151,6 @@ struct cy_map_value *find_in_map(struct rb_root *root, const char *key, unsigned
 			node = node->rb_right;
 	}
 
-	fprintf(stderr, "Can't find map entry\n");
 	return NULL;
 }
 

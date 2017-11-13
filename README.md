@@ -121,7 +121,12 @@ find list named "a" and get the 0th element from it. Respectively `a..b`
 means find list "a", then get what b refers to (should be a number) then
 get the b-th element.
 
-To declare a new symbol there's a `!` command, find its description below.
+There's also a separate `..` token that evaluates two next tokens and
+effectively results in referencing the `1st..2nd` value. IOW the
+`a..b` is equivalent to `.. a b` with the exception that `b` in the
+2nd case can be any evaluatable token.
+
+To declare a new symbol there's a `=` command, find its description below.
 
 ## Command tokens
 

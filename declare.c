@@ -273,10 +273,40 @@ static int eval_nsenter(struct cy_token *t, struct cy_file *f)
 	return 1;
 }
 
+static int eval_deref(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token st, kt;
+	int ret;
+
+	if (cy_eval_next(f, &st) <= 0)
+		return -1;
+	if (cy_eval_next(f, &kt) <= 0)
+		return -1;
+
+	switch (st.v.t) {
+		case CY_V_LIST:
+			ret = dereference_list_elem(t, &st.v, &kt.v);
+			break;
+		case CY_V_MAP:
+			ret = dereference_map_elem(t, &st.v, &kt.v);
+			break;
+		default:
+			show_token_err(t, "Unknown symbol (%s) for nesting", vtype2s(st.v.t));
+			ret = -1;
+			break;
+	}
+
+	if (ret <= 0)
+		return -1;
+
+	return 1;
+}
+
 static struct cy_command cmd_declare[] = {
 	{ .name = "=", .t = { .ts = "declare", .eval = eval_declare, }, },
 	{ .name = "=^", .t = { .ts = "swap", .eval = eval_declare, .priv = 1}, },
 	{ .name = "!!", .t = { .ts = "nsenter", .eval = eval_nsenter, }, },
+	{ .name = "..", .t = { .ts = "deref", .eval = eval_deref, }, },
 	{}
 };
 
