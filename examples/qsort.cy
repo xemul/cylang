@@ -36,5 +36,6 @@
 	= ret ( ) ~ wa { +) ret _.0 } := ret
 }
 
-= words (> Args 1
+= words ( )
+~ { := << _< "ln" } { +) words _ }
 ~ :: qsort __ { ` _ }

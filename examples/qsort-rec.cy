@@ -11,4 +11,6 @@
 	:: split [ split split words a ]
 }
 
--( Args = words Args :: split __
+= words ( )
+~ { := << _< "ln" } { +) words _ }
+:: split __
