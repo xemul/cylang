@@ -241,10 +241,9 @@ In the select case the evaluated argument is considered to consist of bool:block
 pairs. The first boolean token evaluated into true value passes control to the
 respective block token, then the whole `?` evaluation stops.
 
-Loop is `~`. It evaluates the next token and grabs one more. For a list it calls
-the 2nd block for each list element. For a map it calls the block for each map
-key, for command block it calls one until it results in NOVALUE and calls
-2nd block.
+Loop is `~`. It evaluates the next token. For a list or map it grabs one more token
+and calls this command block for each list element or for each map key. For command
+block it calls one until any result (`:= :- :+`) even if novalue.
 
 ### Printing
 

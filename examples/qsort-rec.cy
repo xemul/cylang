@@ -2,8 +2,9 @@
 	= s -( words :- s
 
 	= a ( ) = b ( )
-	~ { := -( words } {
-		+) ? > _ s { := a } { := b } _
+	~ {
+		= w -) words :- w
+		+) ? > w s { := a } { := b } w
 	}
 
 	:: split [ split split words b ]
@@ -12,5 +13,5 @@
 }
 
 = words ( )
-~ { := << _< "ln" } { +) words _ }
+~ { = l << _< "ln" :- l +) words l }
 :: split __

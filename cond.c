@@ -219,31 +219,22 @@ static int eval_map_loop(struct cy_token *t, struct cy_token *mt, struct cy_toke
 	return 1;
 }
 
-static int eval_cblock_loop(struct cy_token *t, struct cy_token *ct, struct cy_token *bt, struct cy_file *f)
+static int eval_cblock_loop(struct cy_token *t, struct cy_token *bt, struct cy_file *f)
 {
 	int ret;
 
 	while (1) {
 		struct cy_value rv = {};
 
-		ret = cy_call_cblock(ct, f, &rv);
+		ret = cy_call_cblock(bt, f, &rv);
 		if (ret <= 0)
 			return -1;
-
-		if (ret != 2 || rv.t == CY_V_NOVALUE)
-			break;
-
-		set_cursor(&rv);
-		ret = call_branch(bt, f, &rv);
-		if (ret < 0)
-			return ret;
 
 		if (ret == 2) {
 			t->v = rv;
 			break;
 		}
 	}
-	set_cursor(NULL);
 
 	return 1;
 }
@@ -286,6 +277,9 @@ static int eval_loop(struct cy_token *t, struct cy_file *f)
 	if (cy_eval_next(f, &lt) <= 0)
 		return -1;
 
+	if (lt.v.t == CY_V_CBLOCK)
+		return eval_cblock_loop(t, &lt, f);
+
 	if (get_branch(&bt, f) <= 0)
 		return -1;
 
@@ -294,8 +288,6 @@ static int eval_loop(struct cy_token *t, struct cy_file *f)
 		return eval_list_loop(t, &lt, &bt, f);
 	case CY_V_MAP:
 		return eval_map_loop(t, &lt, &bt, f);
-	case CY_V_CBLOCK:
-		return eval_cblock_loop(t, &lt, &bt, f);
 	case CY_V_NUMBER:
 		return eval_nuber_loop(t, &lt, &bt, f);
 	}

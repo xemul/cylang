@@ -17,7 +17,8 @@
 = qsort {
 	= wa ( words )
 	= more _+
-	~ { := -. more } {
+	~ {
+		:- -. more
 		= wr ( )
 		= more _-
 		~ wa {
@@ -37,5 +38,5 @@
 }
 
 = words ( )
-~ { := << _< "ln" } { +) words _ }
+~ { = l << _< "ln" :- l +) words l }
 ~ :: qsort __ { ` _ }
