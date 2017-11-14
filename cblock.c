@@ -118,7 +118,7 @@ static struct cy_command cmd_cblock[] = {
 	{ .name = "{:", .t = { .ts = "cblock start (short)", .priv = OP_CBLOCK_SHORT, }, },
 	{ .name = "}", .t = { .ts = "cblock end", .eval = eval_cblock_end, .priv = OP_CBLOCK_END, }, },
 
-	{ .name = "::", .t = { .ts = "call", .eval = eval_call, }, },
+	{ .name = ":",  .t = { .ts = "call", .eval = eval_call, }, },
 	{ .name = ":=", .t = { .ts = "return", .eval = eval_return, }, },
 	{ .name = ":+", .t = { .ts = "value return", .eval = eval_value_return, }, },
 	{ .name = ":-", .t = { .ts = "empty return", .eval = eval_novalue_return, }, },

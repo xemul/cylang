@@ -7,11 +7,11 @@
 		+) ? > w s { := a } { := b } w
 	}
 
-	:: split [ split split words b ]
+	: split [ split split words b ]
 	` s
-	:: split [ split split words a ]
+	: split [ split split words a ]
 }
 
 = words ( )
 ~ { = l << _< "ln" :- l +) words l }
-:: split __
+: split __

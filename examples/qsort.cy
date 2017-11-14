@@ -24,7 +24,7 @@
 		~ wa {
 			= words _
 			? > $ words 1 {
-				= wr + wr :: sep __
+				= wr + wr : sep __
 				= more _+
 			} {
 				+) wr words
@@ -39,4 +39,4 @@
 
 = words ( )
 ~ { = l << _< "ln" :- l +) words l }
-~ :: qsort __ { ` _ }
+~ : qsort __ { ` _ }

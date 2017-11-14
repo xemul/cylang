@@ -32,8 +32,8 @@
 	:= .| map..key key
 }
 
-= eh :: read_file [ struct elf_hdr file <~ Args.1 ]
+= eh : read_file [ struct elf_hdr file <~ Args.1 ]
 
-` + "Type: " :: field_str [ key eh.type map type ]
-` + "Mach: " :: field_str [ key eh.mach map mach ]
+` + "Type: " : field_str [ key eh.type map type ]
+` + "Mach: " : field_str [ key eh.mach map mach ]
 ` + "Vers: " %% "\(eh.vers)"

@@ -254,12 +254,12 @@ printed with quotes aound and new lines at the end.
 
 ### Command blocks
 
-Tokens: `{ } . :: := :+ :-`. The `{` and `}` denote start and end of the command
+Tokens: `{ } . : := :+ :-`. The `{` and `}` denote start and end of the command
 block, token `.` is a shortcut for the `{ }` pair and means a no-op block (useful
-as `?` and `??` sub-blocks). Tokens `::`, `:=`, `:+` and `:-` switch between 
+as `?` and `??` sub-blocks). Tokens `:`, `:=`, `:+` and `:-` switch between 
 blocks.
 
-The `::` one evaluates a command block token and a map token, sets the map as the 
+The `:` one evaluates a command block token and a map token, sets the map as the 
 namespace, passes control to the command block, then restores the namespace back. 
 It's thus the way to do a function call with arguments. Using `__` namespace makes 
 smth like goto.
@@ -268,7 +268,7 @@ The `:=` is like return or break in C. It evaluates the next token, then complet
 execution of the current command block and (!) makes the evaluated argument be the 
 result of evaluation of the token that caused the execution of this command block.
 
-E.g. the `:: { := 1 }` makes the first `::` be evaluated into 1. The `? _+ { := 1 } .`
+E.g. the `: { := 1 }` makes the first `:` be evaluated into 1. The `? _+ { := 1 } .`
 makes `?` be evaluated into 1, since it's `?` that caused execution of the block
 with `:=`.
 
