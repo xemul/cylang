@@ -151,7 +151,7 @@ static int read_cblocks(struct cy_token *t, struct cy_file *f)
 			return ret;
 		}
 
-		if (cb->t.typ->priv == OP_CBLOCK) {
+		if (cb->t.typ->priv == OP_CBLOCK || cb->t.typ->priv == OP_CBLOCK_SHORT) {
 			ret = read_cblocks(&cb->t, f);
 			if (ret <= 0) {
 				free(cb);
@@ -173,6 +173,7 @@ struct cy_file *cy_open(const char *filename, struct cy_token *mt, bool verbose)
 {
 	int ret;
 	struct cy_file *cf;
+	static struct cy_type root_cblock = {};
 
 	cf = cy_read(filename);
 	if (!cf)
@@ -180,6 +181,7 @@ struct cy_file *cy_open(const char *filename, struct cy_token *mt, bool verbose)
 
 	cf->verbose = verbose;
 	cf->main = NULL;
+	mt->typ = &root_cblock;
 	ret = read_cblocks(mt, cf);
 	if (ret < 0) {
 		fprintf(stderr, "Can't parse file");

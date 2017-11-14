@@ -93,8 +93,12 @@ int cy_call_cblock(struct cy_token *ct, struct cy_file *f, struct cy_value *rv)
 		struct cy_token t = {};
 
 		ret = cy_eval_next(f, &t);
-		if (ret == 1)
-			continue;
+		if (ret == 1) {
+			if (ct->typ->priv == OP_CBLOCK_SHORT)
+				ret = 2;
+			else
+				continue;
+		}
 		if (ret == 0)
 			ret = 1;
 		if (ret == 2)
@@ -111,6 +115,7 @@ int cy_call_cblock(struct cy_token *ct, struct cy_file *f, struct cy_value *rv)
 static struct cy_command cmd_cblock[] = {
 	{ .name = ".", .t = { .ts = "nop", .priv = OP_CBLOCK_NOP, }, },
 	{ .name = "{", .t = { .ts = "cblock start", .priv = OP_CBLOCK, }, },
+	{ .name = "{:", .t = { .ts = "cblock start (short)", .priv = OP_CBLOCK_SHORT, }, },
 	{ .name = "}", .t = { .ts = "cblock end", .eval = eval_cblock_end, .priv = OP_CBLOCK_END, }, },
 
 	{ .name = "::", .t = { .ts = "call", .eval = eval_call, }, },

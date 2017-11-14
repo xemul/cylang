@@ -15,7 +15,7 @@ OBJS += misc.o
 OBJS += stream.o
 OBJS += iter.o
 
-CFLAGS += -Wall -Werror
+CFLAGS += -Wall -Werror -g
 
 cyvm: $(OBJS)
 	gcc -o $@ $^

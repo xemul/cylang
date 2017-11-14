@@ -25,6 +25,7 @@ static inline bool is_num(const char v)
 #define OP_CBLOCK	0x70000001
 #define OP_CBLOCK_END	0x70000002
 #define OP_CBLOCK_NOP	0x70000004
+#define OP_CBLOCK_SHORT	0x70000005
 #define OP_COMMENT	0x7fffffff
 
 struct cy_cblock;
