@@ -142,9 +142,7 @@ static int split_string(const char *str, struct cy_value *v)
 {
 	const char *aux = NULL;
 
-	v->t = CY_V_LIST;
-	v->v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&v->v_list->h);
+	make_list(v);
 
 	while (*str != '\0') {
 		if (is_space_at(str)) {

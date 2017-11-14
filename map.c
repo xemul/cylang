@@ -93,10 +93,7 @@ static int map_key(struct cy_file *f, const char **keyp)
 
 static int eval_map(struct cy_token *t, struct cy_file *f)
 {
-	t->v.t = CY_V_MAP;
-	t->v.v_map = malloc(sizeof(struct rb_root));
-	t->v.v_map->r = RB_ROOT;
-	
+	make_map(&t->v);
 	map_depth++;
 	while (1) {
 		int ret;
@@ -127,6 +124,12 @@ er:
 		map_depth--;
 		return -1;
 	}
+}
+
+static int eval_empty_map(struct cy_token *t, struct cy_file *f)
+{
+	make_map(&t->v);
+	return 1;
 }
 
 struct cy_map_value *find_in_map(struct rb_root *root, const char *key, unsigned klen)
@@ -188,6 +191,7 @@ int cy_map_del(struct cy_value *m, struct cy_value *k)
 static struct cy_command cmd_map[] = {
 	{ .name = "[", .t = { .ts = "map start", .eval = eval_map, }, },
 	{ .name = "]", .t = { .ts = "map end", .eval = eval_map_end, }, },
+	{ .name = "[]", .t = { .ts = "empty map", .eval = eval_empty_map, }, },
 	{}
 };
 

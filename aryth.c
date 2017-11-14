@@ -28,10 +28,8 @@ static int eval_add(struct cy_token *t, struct cy_file *f)
 	if (eval_2arg_math(&a, &b, f) <= 0)
 		return -1;
 
-	if (a.v.t == CY_V_LIST) {
-		t->v.t = CY_V_LIST;
+	if (a.v.t == CY_V_LIST)
 		return cy_list_splice(&a.v, &b.v, &t->v);
-	}
 
 	if (a.v.t == CY_V_NUMBER) {
 		t->v.t = CY_V_NUMBER;

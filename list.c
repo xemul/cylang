@@ -13,14 +13,10 @@ static void copy_list(struct list_head *from, struct list_head *to)
 
 int cy_list_splice(struct cy_value *l1, struct cy_value *l2, struct cy_value *r)
 {
-	struct cy_list *rl;
+	make_list(r);
 
-	rl = malloc(sizeof(*rl));
-	r->v_list = rl;
-	INIT_LIST_HEAD(&rl->h);
-
-	copy_list(&l1->v_list->h, &rl->h);
-	copy_list(&l2->v_list->h, &rl->h);
+	copy_list(&l1->v_list->h, &r->v_list->h);
+	copy_list(&l2->v_list->h, &r->v_list->h);
 
 	return 1;
 }
@@ -111,10 +107,7 @@ static int eval_list_end(struct cy_token *t, struct cy_file *f)
 
 static int eval_list(struct cy_token *t, struct cy_file *f)
 {
-	t->v.t = CY_V_LIST;
-	t->v.v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&t->v.v_list->h);
-
+	make_list(&t->v);
 	list_depth++;
 	while (1) {
 		struct cy_token vt;
@@ -139,6 +132,12 @@ static int eval_list(struct cy_token *t, struct cy_file *f)
 		lv->v = vt.v;
 		list_add_tail(&lv->l, &t->v.v_list->h);
 	}
+}
+
+static int eval_empty_list(struct cy_token *t, struct cy_file *f)
+{
+	make_list(&t->v);
+	return 1;
 }
 
 #define OP_CUT_HEAD	1
@@ -173,9 +172,7 @@ static int eval_list_cut(struct cy_token *t, struct cy_file *f)
 		to = ct.v.v_i;
 	}
 
-	t->v.t = CY_V_LIST;
-	t->v.v_list = malloc(sizeof(struct list_head));
-	INIT_LIST_HEAD(&t->v.v_list->h);
+	make_list(&t->v);
 
 	i = 0;
 	list_for_each_entry(lv, &lht.v.v_list->h, l) {
@@ -251,6 +248,7 @@ static int eval_list_pop(struct cy_token *t, struct cy_file *f)
 static struct cy_command cmd_list[] = {
 	{ .name = "(", .t = { .ts = "list start", .eval = eval_list, }, },
 	{ .name = ")", .t = { .ts = "list end", .eval = eval_list_end, }, },
+	{ .name = "()", .t = { .ts = "empty list", .eval = eval_empty_list, }, },
 
 	{ .name = "(<", .t = { .ts = "list head", .eval = eval_list_cut, .priv = OP_CUT_TAIL, }, },
 	{ .name = "(>", .t = { .ts = "list tail", .eval = eval_list_cut, .priv = OP_CUT_HEAD, }, },

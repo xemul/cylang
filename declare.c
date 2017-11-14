@@ -312,8 +312,6 @@ static struct cy_command cmd_declare[] = {
 
 void init_declare(void)
 {
-	symbols.t = CY_V_MAP;
-	symbols.v_map = malloc(sizeof(struct cy_map));
-	symbols.v_map->r = RB_ROOT;
+	make_map(&symbols);
 	add_commands(cmd_declare);
 }

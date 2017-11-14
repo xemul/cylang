@@ -123,6 +123,20 @@ enum {
 	CY_V_STREAM,
 };
 
+static inline void make_list(struct cy_value *v)
+{
+	v->t = CY_V_LIST;
+	v->v_list = malloc(sizeof(struct cy_list));
+	INIT_LIST_HEAD(&v->v_list->h);
+}
+
+static inline void make_map(struct cy_value *v)
+{
+	v->t = CY_V_MAP;
+	v->v_map = malloc(sizeof(struct cy_map));
+	v->v_map->r = RB_ROOT;
+}
+
 #define CY_V_TERMINATOR	0x70000000
 #define CY_V_LIST_END	(CY_V_LIST   | CY_V_TERMINATOR)
 #define CY_V_MAP_END	(CY_V_MAP    | CY_V_TERMINATOR)
