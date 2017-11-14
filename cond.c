@@ -324,7 +324,7 @@ static struct cy_command cmd_compare[] = {
 	{ .name = ">=", { .ts = "ge", .eval = eval_compare, .priv = OP_GE, }, },
 	{ .name = "<",  { .ts = "lt", .eval = eval_compare, .priv = OP_LT, }, },
 	{ .name = "<=", { .ts = "le", .eval = eval_compare, .priv = OP_LE, }, },
-	{ .name = ".=", .t = { .ts = "is novalue", .eval = eval_is_novalue, }, },
+	{ .name = "=.", .t = { .ts = "is novalue", .eval = eval_is_novalue, }, },
 
 	/* If-s */
 	{ .name = "?",  { .ts = "condition", .eval = eval_cond, }, },

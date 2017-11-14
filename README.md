@@ -300,7 +300,7 @@ newline character).
 
 ### Miscelaneous
 
-Tokens: `@ $ .| -. .= =^`.
+Tokens: `@ $ .| -. =. =^`.
 
 The `@` evaluates a list token and one more token and checks whether the latter
 one is present in the list. Results in a boolean value.
@@ -316,7 +316,7 @@ The `-.` evaluates next token and results in NOVALUE if it's empty, i.e. a NOVAL
 itself or false bool, zero number, empty string, list or map. Otherwise results
 in the mentioned token value. The token's meaning is "novalue if empty".
 
-The `.=` token evaluates the next value and results in true if it's NOVALUE or
+The `=.` token evaluates the next value and results in true if it's NOVALUE or
 false otherwise.
 
 The `=^` token is re-declare one. It works like the `=` one, but unlike it, the
