@@ -23,7 +23,7 @@
 	= ret ( )
 	~ l {
 		= x :: fn [ x _ ]
-		? .? x . { +) ret x }
+		? .= x . { +) ret x }
 	}
 	:= ret
 }
