@@ -151,12 +151,34 @@ static int eval_empty_is_novalue(struct cy_token *t, struct cy_file *f)
 	return 1;
 }
 
+static int eval_eval(struct cy_token *t, struct cy_file *f)
+{
+	struct cy_token st;
+
+	if (cy_eval_next_x(f, &st, CY_V_STRING) <= 0)
+		return -1;
+
+	st.val = st.v.v_str;
+	st.v.t = CY_V_NOVALUE;
+
+	if (cy_resolve(&st) < 0)
+		return -1;
+
+	if (st.typ->eval && st.typ->eval(&st, f) <= 0)
+		return -1;
+
+	t->v = st.v;
+	return 1;
+}
+
 static struct cy_command cmd_misc[] = {
 	{ .name = "@",  { .ts = "in", .eval = eval_in, }, },
 	{ .name = "$", .t = { .ts = "sizeof", .eval = eval_sizeof, }, },
 
 	{ .name = ".|", .t = { .ts = "default value", .eval = eval_default_value, }, },
 	{ .name = "-.", .t = { .ts = "no empty", .eval = eval_empty_is_novalue, }, },
+
+	{ .name = "`", .t = { .ts = "eval token", .eval = eval_eval, }, },
 	{}
 };
 

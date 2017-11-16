@@ -8,7 +8,7 @@
 	}
 
 	: split [ split split words b ]
-	` s
+	; s
 	: split [ split split words a ]
 }
 

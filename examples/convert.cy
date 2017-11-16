@@ -7,7 +7,7 @@
 	:= ret
 }
 
-`` : map_l [ l x fn { := + x x } ]
+;; : map_l [ l x fn { := + x x } ]
 
 # "Filter example" #
 = filter_l {
@@ -16,7 +16,7 @@
 	:= ret
 }
 
-`` : filter_l [ l x fn { := > x 1 } ]
+;; : filter_l [ l x fn { := > x 1 } ]
 
 # "Filter + map example #
 = filter_map_l {
@@ -28,4 +28,4 @@
 	:= ret
 }
 
-`` : filter_map_l [ l x fn { := ? > x 1 { := + x x } . } ]
+;; : filter_map_l [ l x fn { := ? > x 1 { := + x x } . } ]

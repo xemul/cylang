@@ -39,4 +39,4 @@
 
 = words ( )
 ~ { = l << _< "ln" :- l +) words l }
-~ : qsort __ { ` _ }
+~ : qsort __ { ; _ }

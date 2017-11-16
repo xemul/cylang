@@ -247,10 +247,10 @@ block it calls one until any result (`:= :- :+`) even if novalue.
 
 ### Printing
 
-Tokens: <code>`</code> and <code>``</code>. Evaluate next token and print it on the
-screen. The former one accepts only strings and prints them as is, the latter one
-accepts any other token and prints it some string representation, e.g. strings are
-printed with quotes aound and new lines at the end.
+Tokens: `;` and `;;`. Evaluate next token and print it on the screen. The
+former one accepts only strings and prints them as is, the latter one
+accepts any other token and prints it some string representation, e.g. strings
+are printed with quotes aound and new lines at the end.
 
 ### Command blocks
 
@@ -323,6 +323,13 @@ The `=^` token is re-declare one. It works like the `=` one, but unlike it, the
 exist before, the result is NOVALUE. When evaluating the velue for the new
 symbol the cursor is available and points to the symbol's old value. E.g. the
 `= x =^ y + _ 1` is equivalent to C `x = y++`.
+
+The <code>`</code> token is "eval" analogue. It gets the next string token
+and resolves and evaluates it's value one more time. E.g. the
+
+    ` "+" 1 2
+
+is the same as just `+ 1 2`.
 
 ## Launching
 
