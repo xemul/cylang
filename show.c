@@ -40,9 +40,9 @@ static int show_list(struct list_head *h, char tc, struct cy_token *st)
 	struct cy_list_value *lv;
 	int ret;
 
-	printf("(");
+	printf("( ");
 	list_for_each_entry(lv, h, l) {
-		ret = show_value(&lv->v, ',', st);
+		ret = show_value(&lv->v, ' ', st);
 		if (ret <= 0)
 			return ret;
 	}
@@ -56,17 +56,17 @@ static int show_map(struct rb_root *r, char tc, struct cy_token *st)
 	struct rb_node *n;
 	int ret;
 
-	printf("{");
+	printf("[ ");
 	for (n = rb_first(r); n != NULL; n = rb_next(n)) {
 		struct cy_map_value *mv;
 
 		mv = rb_entry(n, struct cy_map_value, n);
-		printf("%s:", mv->key);
-		ret = show_value(&mv->v, ',', st);
+		printf("%s ", mv->key);
+		ret = show_value(&mv->v, ' ', st);
 		if (ret <= 0)
 			return ret;
 	}
-	printf("}%c", tc);
+	printf("]%c", tc);
 
 	return 1;
 }
