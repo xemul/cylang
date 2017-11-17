@@ -12,6 +12,5 @@
 	: split [ split split words a ]
 }
 
-= words ( )
-~ { = l << _< "ln" :- l +) words l }
+= words () ~ { = l << _< "ln" :- l +) words l }
 : split __
